@@ -140,23 +140,4 @@ public class SpeakerDemo {
 	private record Speech(File speechFile, int speechDuration) {
 		
 	}
-	
-	//JUnit test
-	@Test
-	public void speechToTextFromAudioFile() throws Exception {
-        InputStream audioStream = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream("assets/sounds/duck.wav")));
-        Recognizer recognizer = new Recognizer(new Model("assets/model"), 44100);
-        byte[] b = new byte[4096];
-        int bytes = audioStream.read(b);
-        while(bytes >= 0) {
-        	if(recognizer.acceptWaveForm(b, bytes)) {
-        		print(recognizer.getResult());
-        	} else {
-        		print(recognizer.getPartialResult());
-        	}
-        	bytes = audioStream.read(b);
-        }
-        recognizer.close();
-        audioStream.close();
-	}
 }
