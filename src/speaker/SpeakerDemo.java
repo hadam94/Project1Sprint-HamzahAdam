@@ -73,6 +73,7 @@ public class SpeakerDemo {
         print("All spoken words have been saved to " + speech.speechFile.getPath());
 	}
 	
+	//parsing
 	private static String parseJson(String speechResult) {
     	String speech = speechResult.substring(4);
     	speech = speech.substring(0, speech.length() - 1).replaceAll(String.valueOf('"'), "");
