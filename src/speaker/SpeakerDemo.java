@@ -114,7 +114,7 @@ public class SpeakerDemo {
 		return new Speech(file, speechDuration);
 	}
 	
-	/*The BufferedWriter class overwrites any existing text in the current file. 
+	/**The BufferedWriter class overwrites any existing text in the current file. 
 	 * we need to scan all of the existing text in the file, and append that to a string.
 	 * Then we can rewrite the existing text and any words you spoken to not loose any data.
 	 */
