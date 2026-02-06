@@ -1,30 +1,26 @@
 package speaker;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Scanner;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.junit.Test;
 import org.vosk.LibVosk;
 import org.vosk.LogLevel;
 import org.vosk.Model;
 import org.vosk.Recognizer;
 
-public class SpeechToText {
+import speaker.util.ParseSpeechUtil;
+
+public class SpeechDemo {
 	
 	public static void main(String[] args) throws Exception {
 		Speech speech = getFileFromInput();
@@ -49,12 +45,12 @@ public class SpeechToText {
         		break;
         	}
             if(recognizer.acceptWaveForm(b, bytes)) {
-            	String[] result = parseJson(recognizer.getResult()).split(" : ");
+            	String[] result = ParseSpeechUtil.parseSpeech(recognizer.getResult()).split(" : ");
             	print(result[1]);
             	wordsSpoken += result[1];
             	partialResult = null;
             } else {
-            	String[] result = parseJson(recognizer.getPartialResult()).split(" : ");
+            	String[] result = ParseSpeechUtil.parseSpeech(recognizer.getPartialResult()).split(" : ");
             	partialResult = result[1];
             }
             //read the audio from microphone.
@@ -71,14 +67,6 @@ public class SpeechToText {
         
         saveSpeechToFile(wordsSpoken.toString(), speech.speechFile);
         print("All spoken words have been saved to " + speech.speechFile.getPath());
-	}
-	
-	//parsing
-	private static String parseJson(String speechResult) {
-    	String speech = speechResult.substring(4);
-    	speech = speech.substring(0, speech.length() - 1).replaceAll(String.valueOf('"'), "");
-    	return speech;
-    	
 	}
 	
 	private static Speech getFileFromInput() {
