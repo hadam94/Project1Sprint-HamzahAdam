@@ -18,55 +18,58 @@ import org.vosk.LogLevel;
 import org.vosk.Model;
 import org.vosk.Recognizer;
 
+import speech.util.HttpUtil;
 import speech.util.ParseSpeechUtil;
 
 public class SpeechDemo {
 	
 	public static void main(String[] args) throws Exception {
-		Speech speech = getFileFromInput();
-		LibVosk.setLogLevel(LogLevel.DEBUG);
-		Model model = new Model("assets/model");
-        //44.1khz for cd quality, mono channel
-        AudioFormat format = new AudioFormat(44100f, 16, 1, true, false);
-		TargetDataLine audio = (TargetDataLine) AudioSystem.getLine(new DataLine.Info(TargetDataLine.class, format));
-		audio.open(format);
-		audio.start();
-        
-        Recognizer recognizer = new Recognizer(model, 44100f);
-        byte[] b = new byte[4096];
-        int bytes = audio.read(b, 0, b.length);
-        long startTime = System.currentTimeMillis();
-        String wordsSpoken = "";
-        print("Begin speech!");
-        Thread.sleep(250L);
-        String partialResult = "";
-        while(bytes >= 0) {
-        	if((System.currentTimeMillis() - startTime) > (speech.speechDuration*1000L)) {
-        		break;
-        	}
-            if(recognizer.acceptWaveForm(b, bytes)) {
-            	String[] result = ParseSpeechUtil.parseSpeech(recognizer.getResult()).split(" : ");
-            	print(result[1]);
-            	wordsSpoken += result[1];
-            	partialResult = null;
-            } else {
-            	String[] result = ParseSpeechUtil.parseSpeech(recognizer.getPartialResult()).split(" : ");
-            	partialResult = result[1];
-            }
-            //read the audio from microphone.
-        	bytes = audio.read(b, 0, b.length);
-        }
-        
-        if(partialResult != null) {
-        	wordsSpoken += partialResult;
-        }
-        
-        audio.stop();
-        recognizer.close();
-        model.close();
-        
-        saveSpeechToFile(wordsSpoken.toString(), speech.speechFile);
-        print("All spoken words have been saved to " + speech.speechFile.getPath());
+//		Speech speech = getFileFromInput();
+//		LibVosk.setLogLevel(LogLevel.DEBUG);
+//		Model model = new Model("assets/model");
+//        //44.1khz for cd quality, mono channel
+//        AudioFormat format = new AudioFormat(44100f, 16, 1, true, false);
+//		TargetDataLine audio = (TargetDataLine) AudioSystem.getLine(new DataLine.Info(TargetDataLine.class, format));
+//		audio.open(format);
+//		audio.start();
+//        
+//        Recognizer recognizer = new Recognizer(model, 44100f);
+//        byte[] b = new byte[4096];
+//        int bytes = audio.read(b, 0, b.length);
+//        long startTime = System.currentTimeMillis();
+//        String wordsSpoken = "";
+//        print("Begin speech!");
+//        Thread.sleep(250L);
+//        String partialResult = "";
+//        while(bytes >= 0) {
+//        	if((System.currentTimeMillis() - startTime) > (speech.speechDuration*1000L)) {
+//        		break;
+//        	}
+//            if(recognizer.acceptWaveForm(b, bytes)) {
+//            	String[] result = ParseSpeechUtil.parseSpeech(recognizer.getResult()).split(" : ");
+//            	print(result[1]);
+//            	wordsSpoken += result[1];
+//            	partialResult = null;
+//            } else {
+//            	String[] result = ParseSpeechUtil.parseSpeech(recognizer.getPartialResult()).split(" : ");
+//            	partialResult = result[1];
+//            }
+//            //read the audio from microphone.
+//        	bytes = audio.read(b, 0, b.length);
+//        }
+//        
+//        if(partialResult != null) {
+//        	wordsSpoken += partialResult;
+//        }
+//        
+//        audio.stop();
+//        recognizer.close();
+//        model.close();
+//        
+//        saveSpeechToFile(wordsSpoken.toString(), speech.speechFile);
+//        print("All spoken words have been saved to " + speech.speechFile.getPath());
+		
+		HttpUtil.login("Duck", "Mallard");
 	}
 	
 	private static Speech getFileFromInput() {
