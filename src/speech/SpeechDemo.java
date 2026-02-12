@@ -18,7 +18,7 @@ import org.vosk.LogLevel;
 import org.vosk.Model;
 import org.vosk.Recognizer;
 
-import speech.util.HttpUtil;
+import speech.util.RoomBookingUtil;
 import speech.util.ParseSpeechUtil;
 
 public class SpeechDemo {
@@ -69,7 +69,8 @@ public class SpeechDemo {
 //        saveSpeechToFile(wordsSpoken.toString(), speech.speechFile);
 //        print("All spoken words have been saved to " + speech.speechFile.getPath());
 		
-		HttpUtil.login("Duck", "Mallard");
+	//	RoomBookingUtil.login("Comp490.002@bridgew.edu", "TuesThurs12:20");
+		RoomBookingUtil.listAvalibleMeetingRooms();
 	}
 	
 	private static Speech getFileFromInput() {
