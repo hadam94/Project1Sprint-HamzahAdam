@@ -8,18 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.TargetDataLine;
-
-import org.vosk.LibVosk;
-import org.vosk.LogLevel;
-import org.vosk.Model;
-import org.vosk.Recognizer;
-
-import speech.util.RoomBookingUtil;
-import speech.util.ParseSpeechUtil;
+import speech.booking.RoomBooking;
 
 public class SpeechDemo {
 	
@@ -69,8 +58,8 @@ public class SpeechDemo {
 //        saveSpeechToFile(wordsSpoken.toString(), speech.speechFile);
 //        print("All spoken words have been saved to " + speech.speechFile.getPath());
 		
-	//	RoomBookingUtil.login("Comp490.002@bridgew.edu", "TuesThurs12:20");
-		RoomBookingUtil.listAvalibleMeetingRooms();
+		RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:20");
+		//RoomBooking.listAvalibleMeetingRooms();
 	}
 	
 	private static Speech getFileFromInput() {

@@ -1,4 +1,4 @@
-package speech.util;
+package speech.booking;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
-public class RoomBookingUtil {
+public class RoomBooking {
 	
 	private static final String SERVER_URL = "http://198.74.62.248:4567";
 	//grabbed it from inspect element
@@ -24,23 +24,12 @@ public class RoomBookingUtil {
 			connection.setDoOutput(true);
 			connection.setConnectTimeout(3000);
 			char c = '"';
-			StringBuilder jsonObject = new StringBuilder();
-			jsonObject.append("{");
-			jsonObject.append(c + "email" + c + ": " + c + email + c + ", ");
-			jsonObject.append(c + "password" + c + ": " + c + password + c + "}");
-			connection.getOutputStream().write(jsonObject.toString().getBytes());
+			JsonObject json = new JsonObject();
+			json.addProperty("email", email);
+			json.addProperty("password", password);
+			connection.getOutputStream().write(json.getBytes());
 			connection.connect();
-			InputStream stream = connection.getInputStream();
-			String response = "";
-			while(true) {
-				int character = stream.read();
-				if(character == -1) {
-					break;
-				}
-				response += (char)character;
-			}
-			System.out.println(response);
-			stream.close();
+			String response = getResponseFromServer(connection.getInputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,16 +45,7 @@ public class RoomBookingUtil {
 			connection.setDoInput(true);
 			connection.setRequestProperty("User-Agent", AGENT);
 			connection.connect();
-			InputStream stream = connection.getInputStream();
-			String response = "";
-			while(true) {
-				int character = stream.read();
-				if(character == -1) {
-					break;
-				}
-				response += (char)character;
-			}
-			stream.close();
+			String response = getResponseFromServer(connection.getInputStream());
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -73,5 +53,18 @@ public class RoomBookingUtil {
 	
 	public static void listMyBookings() {
 		
+	}
+	
+	private static String getResponseFromServer(InputStream stream) throws IOException {
+		String response = "";
+		while(true) {
+			int character = stream.read();
+			if(character == -1) {
+				break;
+			}
+			response += (char)character;
+		}
+		stream.close();
+		return response;
 	}
 }
