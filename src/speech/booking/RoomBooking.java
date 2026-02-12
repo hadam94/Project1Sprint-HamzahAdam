@@ -51,7 +51,26 @@ public class RoomBooking {
 		}
 	}
 	
+	public static void bookMeetingRoom() {
+		
+	}
+	
 	public static void listMyBookings() {
+		try {
+			URL url = URI.create(SERVER_URL + "/api/v1/meeting-rooms/my-bookings/").toURL();
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setConnectTimeout(3000);
+			connection.setDoInput(true);
+			connection.setRequestProperty("User-Agent", AGENT);
+			connection.connect();
+			String response = getResponseFromServer(connection.getInputStream());
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void cancelMeetingRoom() {
 		
 	}
 	
