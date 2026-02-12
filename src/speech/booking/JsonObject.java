@@ -8,11 +8,15 @@ import java.util.Objects;
 public class JsonObject {
 	
 	//We need to use a linked hash map to store the key-value pairs in order.
-	private final Map<String, String> jsonObject = new LinkedHashMap<>();
+	private final Map<String, Object> jsonObject = new LinkedHashMap<>();
 	private static final char c = '"';
 	
-	public void addProperty(String key, String value) {
-		jsonObject.put(key, value);
+	public void addProperty(String key, Object value) {
+		if(value instanceof String) {
+			jsonObject.put(key, c + "" + value + c);
+		} else {
+			jsonObject.put(key, value);
+		}
 	}
 	
 	public void removeProperty(String key) {
@@ -29,9 +33,9 @@ public class JsonObject {
 		builder.append("{");
 		int i = 0;
 		int size = jsonObject.size();
-		for(Entry<String, String> entry: jsonObject.entrySet()) {
+		for(Entry<String, Object> entry: jsonObject.entrySet()) {
 			String seperator = i == size - 1 ? "" : ", ";
-			builder.append(c + entry.getKey() + c + ": " + c + entry.getValue() + c + seperator);
+			builder.append(c + entry.getKey() + c + ": " + entry.getValue() + seperator);
 			i++;
 		}
 		builder.append("}");
