@@ -1,0 +1,57 @@
+package speech.test;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
+import org.junit.Test;
+
+import speech.booking.RoomBooking;
+import speech.util.JsonObject;
+
+public class RoomBookingTest {
+	
+	@Test
+	public void loginWithCredentials() {
+		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		boolean hasAccessToken = false;
+		if(token.hasProperty("token") && ((JsonObject) token.getProperty("token")).hasProperty("access")) {
+			String accessToken = ((JsonObject) token.getProperty("token")).getProperty("access");
+			print(accessToken);
+			hasAccessToken = true;
+		}
+		assertEquals("Response from the server failed.", true, hasAccessToken);
+	}
+	
+	@Test
+	public void retrieveRooms() {
+		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		List<JsonObject> rooms = RoomBooking.listAvalibleMeetingRooms(token);
+		boolean hasDmf = false;
+		for(JsonObject room: rooms) {
+			if(room.getProperty("room_name").equals("DMF 363")) {
+				print("DMF 363");
+				hasDmf = true;
+				break;
+			}
+		}
+		assertEquals("That room is not DMF 363 Or there is no rooms.", true, hasDmf);
+	}
+	
+	@Test
+	public void makeReservation() {
+		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		//Booking room for 15 minutes
+		JsonObject firstResponse = RoomBooking.bookMeetingRoom(token, "2026-02-09 4:00 AM", "2026-02-09 4:15 AM", 1);
+		print(firstResponse);
+		assertEquals("Room Not created.", "Meeting room booked successfully.", firstResponse.getProperty("message"));
+		JsonObject secondResponse = RoomBooking.bookMeetingRoom(token, "2026-02-09 4:00 AM", "2026-02-09 4:15 AM", 1);
+		print(secondResponse);
+		assertEquals("Room creation did not fail on 2nd try.", true, secondResponse.hasProperty("error"));
+	}
+	
+	
+	private static void print(Object args) {
+		System.out.println(args);
+	}
+}
