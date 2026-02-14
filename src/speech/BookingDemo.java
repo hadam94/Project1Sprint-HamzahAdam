@@ -14,7 +14,15 @@ public class BookingDemo {
 		System.out.println(object);
 		
 		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
-		RoomBooking.cancelMeetingRoom(1, token);
+		print(token);
+		print(RoomBooking.listAvalibleMeetingRooms(token));
+		print(RoomBooking.bookMeetingRoom(token, "2026-02-09 9:00 AM", "2026-02-09 9:38 AM", 1));
+		print(RoomBooking.listMyBookings(token));
+		print(RoomBooking.cancelMeetingRoom(token, 167));
 		
+	}
+	
+	private static void print(Object args) {
+		System.out.println(args);
 	}
 }

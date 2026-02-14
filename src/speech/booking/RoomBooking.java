@@ -40,7 +40,7 @@ public class RoomBooking {
 		}
 	}
 	
-	public static List<JsonObject> listAvalibleMeetingRooms(JsonObject token) {
+	public static List<JsonObject> listAvalibleMeetingRooms(JsonObject loginToken) {
 		try {
 			URL url = URI.create(SERVER_URL + "/api/v1/meeting-rooms/available/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -48,7 +48,7 @@ public class RoomBooking {
 			connection.setConnectTimeout(3000);
 			connection.setDoOutput(true);
 			connection.setRequestProperty("User-Agent", AGENT);
-			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) token.getProperty("token")).getProperty("access"));
+			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) loginToken.getProperty("token")).getProperty("access"));
 			connection.connect();
 			String response = getResponseFromServer(connection.getInputStream());
 			response = response.substring(1, response.length() - 1);
@@ -104,19 +104,20 @@ public class RoomBooking {
 		}
 	}
 	
-	public static void cancelMeetingRoom(int bookingId, JsonObject loginToken) {
+	public static String cancelMeetingRoom(JsonObject loginToken, int bookingId) {
 		try {
 			URL url = URI.create(SERVER_URL + "/api/v1/meeting-rooms/" + bookingId + "/cancel-booking/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("DELETE");
 			connection.setConnectTimeout(3000);
-			connection.setDoInput(true);
 			connection.setRequestProperty("User-Agent", AGENT);
+			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) loginToken.getProperty("token")).getProperty("access"));
 			connection.connect();
-			String response = getResponseFromServer(connection.getInputStream());
+			return getResponseFromServer(connection.getInputStream());
 		} catch(IOException e) {
 			e.printStackTrace();
+			return null;
 		}
 	}
 	
