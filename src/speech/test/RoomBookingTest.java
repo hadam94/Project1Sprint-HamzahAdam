@@ -9,8 +9,14 @@ import org.junit.Test;
 import speech.booking.RoomBooking;
 import speech.util.JsonObject;
 
+
+//Sprint 2
+//Hamzah Adam
 public class RoomBookingTest {
 	
+	/**
+	 * Logs in, gets jwt token
+	 */
 	@Test
 	public void loginWithCredentials() {
 		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
@@ -23,6 +29,9 @@ public class RoomBookingTest {
 		assertEquals("Response from the server failed.", true, hasAccessToken);
 	}
 	
+	/**
+	 * I assume the correct room is DMF 363... since that is where we meet.
+	 */
 	@Test
 	public void retrieveRooms() {
 		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
@@ -38,14 +47,17 @@ public class RoomBookingTest {
 		assertEquals("That room is not DMF 363 Or there is no rooms.", true, hasDmf);
 	}
 	
+	/**
+	 * For this function, you want to change the time after each run so it works as intended, since it will be stored in the backend of the server
+	 */
 	@Test
 	public void makeReservation() {
 		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
 		//Booking room for 15 minutes
-		JsonObject firstResponse = RoomBooking.bookMeetingRoom(token, "2026-02-09 4:00 AM", "2026-02-09 4:15 AM", 1);
+		JsonObject firstResponse = RoomBooking.bookMeetingRoom(token, "2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
 		print(firstResponse);
 		assertEquals("Room Not created.", "Meeting room booked successfully.", firstResponse.getProperty("message"));
-		JsonObject secondResponse = RoomBooking.bookMeetingRoom(token, "2026-02-09 4:00 AM", "2026-02-09 4:15 AM", 1);
+		JsonObject secondResponse = RoomBooking.bookMeetingRoom(token, "2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
 		print(secondResponse);
 		assertEquals("Room creation did not fail on 2nd try.", true, secondResponse.hasProperty("error"));
 	}

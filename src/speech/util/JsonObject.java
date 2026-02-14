@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class JsonObject {
 	
-	//We need to use a linked hash map to store the key-value pairs in order.
+	//We need to use a linked hash map to store the key-value pairs in order, o(1) lookup time, xors the object hashcode in the hashing function when inserting a key-value pair.
 	private final LinkedHashMap<String, Object> jsonObject = new LinkedHashMap<>();
 	private static final char c = '"';
 	
@@ -61,6 +61,7 @@ public class JsonObject {
 		return this;
 	}
 	
+	//Java Generics On top
 	public <T> T getProperty(String key) {
 		return (T) jsonObject.get(key);
 	}
@@ -79,6 +80,7 @@ public class JsonObject {
 		builder.append("{");
 		int i = 0;
 		int size = jsonObject.size();
+		//o(n)
 		for(Entry<String, Object> entry: jsonObject.entrySet()) {
 			String seperator = i == size - 1 ? "" : ",";
 			Object value =  entry.getValue();

@@ -86,7 +86,7 @@ public class RoomBooking {
 		}
 	}
 	
-	public static void listMyBookings(JsonObject token) {
+	public static String listMyBookings(JsonObject loginToken) {
 		try {
 			URL url = URI.create(SERVER_URL + "/api/v1/meeting-rooms/my-bookings/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -94,12 +94,13 @@ public class RoomBooking {
 			connection.setConnectTimeout(3000);
 			connection.setDoInput(true);
 			connection.setRequestProperty("User-Agent", AGENT);
-			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) token.getProperty("token")).getProperty("access"));
+			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) loginToken.getProperty("token")).getProperty("access"));
 			connection.connect();
 			String response = getResponseFromServer(connection.getInputStream());
-			System.out.println(response);
+			return response;
 		} catch(IOException e) {
 			e.printStackTrace();
+			return null;
 		}
 	}
 	
@@ -114,7 +115,6 @@ public class RoomBooking {
 			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) loginToken.getProperty("token")).getProperty("access"));
 			connection.connect();
 			String response = getResponseFromServer(connection.getInputStream());
-			System.out.println(response);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
