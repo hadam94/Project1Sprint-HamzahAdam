@@ -3,7 +3,7 @@ package speech;
 import speech.booking.RoomBooking;
 import speech.util.JsonObject;
 
-//Probably will be used for sprint 3
+//Hamzah Adam Sprint 2
 public class BookingDemo {
 	
 	public static void main(String[] args) {
@@ -16,7 +16,7 @@ public class BookingDemo {
 		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
 		print(token);
 		print(RoomBooking.listAvalibleMeetingRooms(token));
-		print(RoomBooking.bookMeetingRoom(token, "2026-02-09 9:00 AM", "2026-02-09 9:38 AM", 1));
+		print(RoomBooking.bookMeetingRoom(token, "2026-02-09 5:00 AM", "2026-02-09 9:38 AM", 1));
 		print(RoomBooking.listMyBookings(token));
 		print(RoomBooking.cancelMeetingRoom(token, 167));
 		
