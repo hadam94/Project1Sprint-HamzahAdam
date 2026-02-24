@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import speech.booking.RoomBooking;
+import speech.booking.RoomBookingRequests;
 import speech.util.JsonObject;
 
 
@@ -19,7 +19,7 @@ public class RoomBookingTest {
 	 */
 	@Test
 	public void loginWithCredentials() {
-		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		JsonObject token = RoomBookingRequests.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
 		boolean hasAccessToken = false;
 		if(token.hasProperty("token") && ((JsonObject) token.getProperty("token")).hasProperty("access")) {
 			String accessToken = ((JsonObject) token.getProperty("token")).getProperty("access");
@@ -34,8 +34,8 @@ public class RoomBookingTest {
 	 */
 	@Test
 	public void retrieveRooms() {
-		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
-		List<JsonObject> rooms = RoomBooking.listAvalibleMeetingRooms(token);
+		JsonObject token = RoomBookingRequests.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		List<JsonObject> rooms = RoomBookingRequests.listAvalibleMeetingRooms(token);
 		boolean hasDmf = false;
 		for(JsonObject room: rooms) {
 			if(room.getProperty("room_name").equals("DMF 363")) {
@@ -52,12 +52,12 @@ public class RoomBookingTest {
 	 */
 	@Test
 	public void makeReservation() {
-		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		JsonObject token = RoomBookingRequests.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
 		//Booking room for 15 minutes
-		JsonObject firstResponse = RoomBooking.bookMeetingRoom(token, "2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
+		JsonObject firstResponse = RoomBookingRequests.bookMeetingRoom(token, "2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
 		print(firstResponse);
 		assertEquals("Room Not created.", "Meeting room booked successfully.", firstResponse.getProperty("message"));
-		JsonObject secondResponse = RoomBooking.bookMeetingRoom(token, "2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
+		JsonObject secondResponse = RoomBookingRequests.bookMeetingRoom(token, "2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
 		print(secondResponse);
 		assertEquals("Room creation did not fail on 2nd try.", true, secondResponse.hasProperty("error"));
 	}

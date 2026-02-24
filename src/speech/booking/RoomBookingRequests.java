@@ -12,7 +12,7 @@ import java.util.List;
 
 import speech.util.JsonObject;
 
-public class RoomBooking {
+public class RoomBookingRequests {
 	
 	private static final String SERVER_URL = "http://198.74.62.248:4567";
 	//grabbed it from inspect element

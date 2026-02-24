@@ -1,6 +1,6 @@
 package speech;
 
-import speech.booking.RoomBooking;
+import speech.booking.RoomBookingRequests;
 import speech.util.JsonObject;
 
 //Hamzah Adam Sprint 2
@@ -13,12 +13,12 @@ public class BookingDemo {
 		JsonObject object =	JsonObject.of(e);
 		System.out.println(object);
 		
-		JsonObject token = RoomBooking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		JsonObject token = RoomBookingRequests.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
 		print(token);
-		print(RoomBooking.listAvalibleMeetingRooms(token));
-		print(RoomBooking.bookMeetingRoom(token, "2026-02-03 5:00 AM", "2026-02-03 9:38 AM", 1));
-		print(RoomBooking.listMyBookings(token));
-		print(RoomBooking.cancelMeetingRoom(token, 167));
+		print(RoomBookingRequests.listAvalibleMeetingRooms(token));
+		print(RoomBookingRequests.bookMeetingRoom(token, "2026-02-03 5:00 AM", "2026-02-03 9:38 AM", 1));
+		print(RoomBookingRequests.listMyBookings(token));
+		print(RoomBookingRequests.cancelMeetingRoom(token, 167));
 		
 	}
 	
