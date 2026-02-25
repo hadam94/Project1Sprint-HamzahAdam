@@ -9,8 +9,10 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import speech.util.JsonObject;
+import static speech.util.PrintUtil.print;
 
 public class RoomBookingRequests {
 	
@@ -18,7 +20,10 @@ public class RoomBookingRequests {
 	//grabbed it from inspect element
 	private static final String AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36";
 	
-	public static JsonObject login(String email, String password) {
+	private JsonObject loginToken;
+	
+	
+	public void login(String email, String password) {
 		try {
 			URL url = URI.create(SERVER_URL + "/api/v1/member/login/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -33,14 +38,14 @@ public class RoomBookingRequests {
 			connection.getOutputStream().write(json.getBytes());
 			connection.connect();
 			String response = getResponseFromServer(connection.getInputStream());
-			return new JsonObject().addProperty("token", JsonObject.of(response.substring(9)));
+			loginToken = JsonObject.of(response);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			return new JsonObject().addProperty("error", e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	
-	public static List<JsonObject> listAvalibleMeetingRooms(JsonObject loginToken) {
+	public List<JsonObject> listAvalibleMeetingRooms() {
 		try {
 			URL url = URI.create(SERVER_URL + "/api/v1/meeting-rooms/available/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -54,7 +59,8 @@ public class RoomBookingRequests {
 			response = response.substring(1, response.length() - 1);
 			List<JsonObject> jsonObjects = new ArrayList<JsonObject>();
 			for(String room: response.split("},")) {
-				jsonObjects.add(JsonObject.of(room + "}"));
+				String roomJson = room.endsWith("}") ? room :room + "}";
+				jsonObjects.add(JsonObject.of(roomJson));
 			}
 			return jsonObjects;
 		} catch(IOException e) {
@@ -63,7 +69,7 @@ public class RoomBookingRequests {
 		}
 	}
 	
-	public static JsonObject bookMeetingRoom(JsonObject loginToken, String startTime, String endTime, int people) {
+	public JsonObject bookMeetingRoom(String startTime, String endTime, int people) {
 		try {
 			URL url = URI.create(SERVER_URL + "/api/v1/meeting-rooms/1/book/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -86,7 +92,7 @@ public class RoomBookingRequests {
 		}
 	}
 	
-	public static String listMyBookings(JsonObject loginToken) {
+	public List<JsonObject> listMyBookings() {
 		try {
 			URL url = URI.create(SERVER_URL + "/api/v1/meeting-rooms/my-bookings/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -97,14 +103,27 @@ public class RoomBookingRequests {
 			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) loginToken.getProperty("token")).getProperty("access"));
 			connection.connect();
 			String response = getResponseFromServer(connection.getInputStream());
-			return response;
+			response = response.substring(1, response.length() - 1);
+			List<JsonObject> jsonObjects = new ArrayList<JsonObject>();
+//			for(String room: response.split(",{")) {
+//				print(room);
+//			}
+			String objectText = "";
+			for(char character: response.toCharArray()) {
+				objectText += character;
+				if(objectText.endsWith("},{")) {
+					jsonObjects.add(JsonObject.of(objectText.substring(0, objectText.length() - 2)));
+					objectText = "" + character;
+				}
+			}
+			return jsonObjects;
 		} catch(IOException e) {
 			e.printStackTrace();
-			return null;
+			return List.of();
 		}
 	}
 	
-	public static String cancelMeetingRoom(JsonObject loginToken, int bookingId) {
+	public String cancelMeetingRoom(int bookingId) {
 		try {
 			URL url = URI.create(SERVER_URL + "/api/v1/meeting-rooms/" + bookingId + "/cancel-booking/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();

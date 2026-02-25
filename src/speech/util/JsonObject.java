@@ -4,6 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import static speech.util.PrintUtil.print;
+
 
 public class JsonObject {
 	
@@ -12,37 +14,44 @@ public class JsonObject {
 	private static final char c = '"';
 	
 	//converts a string to a jsonObject.
-	//Adding support for nested objects is a nightmare... may do it later
 	public static JsonObject of(String jsonObjectText) {
+		jsonObjectText = jsonObjectText.substring(1, jsonObjectText.length() - 1);
 		JsonObject object = new JsonObject();
-		int objectIndex = 0;
+		char[] characters = jsonObjectText.toCharArray();
+		boolean hasNestedObject = false;
 		String jsonText = "";
-		char[] array = jsonObjectText.toCharArray();
-		for(char c: array) {
-			if(c == ',' || c == '}') {
-				String[] tokenSplit = jsonText.split(":");
-				if(tokenSplit.length != 2)
+		int index = 0;
+		for(char character: characters) {
+			jsonText += character;
+			boolean reachedEnd = index++ == characters.length - 1;
+			if(jsonText.endsWith("," + '"') || reachedEnd) {
+				String jsonObject = jsonText.substring(0, jsonText.length() - (reachedEnd ? 0 : 2));
+				String[] elementPair = jsonObject.split(":");
+				String key = elementPair[0].substring(1, elementPair[0].length() - 1);
+				Object value = getValue(elementPair[1].replaceAll("" + '"', ""));
+				if(jsonObject.endsWith("}")) {
+					object.addProperty(key, of(jsonObject.substring(key.length() + 3, jsonObject.length())));
+					hasNestedObject = false;
+					jsonText = "" + '"';
 					continue;
-				String key = tokenSplit[0].substring(objectIndex == 0 ? 2 : 1, tokenSplit[0].length() - 1);
-				Object value = getValue(tokenSplit[1]);
-				
+				}
+				if(value instanceof String str && str.startsWith("{")) {
+					hasNestedObject = true;
+				}
+				if(hasNestedObject)
+					continue;
 				object.addProperty(key, value);
-				
-				jsonText = "";
-				objectIndex++;
-			} else {
-				jsonText += c;
+				jsonText = "" + '"';
 			}
 		}
 		return object;
 	}
 	
-	//assume the token is a string if it starts with a "
-	private static Object getValue(String token) {
-		if(token.startsWith(String.valueOf('"'))) {
-			return token.substring(1, token.length() - 1);
-		} else {
-			return Integer.parseInt(token);
+	private static Object getValue(String value) {
+		try {
+			return Integer.parseInt(value);
+		} catch(NumberFormatException e) {
+			return value;
 		}
 	}
 	

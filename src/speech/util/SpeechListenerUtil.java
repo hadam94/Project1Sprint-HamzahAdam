@@ -14,6 +14,7 @@ import org.vosk.LibVosk;
 import org.vosk.LogLevel;
 import org.vosk.Model;
 import org.vosk.Recognizer;
+import static speech.util.PrintUtil.print;
 
 public class SpeechListenerUtil {
 	
@@ -35,10 +36,10 @@ public class SpeechListenerUtil {
 	        Recognizer recognizer = new Recognizer(model, 44100f);
 	        byte[] b = new byte[4096];
 	        int bytes = audio.read(b, 0, b.length);
-	        long startTime = System.currentTimeMillis();
 	        String wordsSpoken = "";
-	       // print("Begin speech!");
+	        print("Begin speech!");
 	        Thread.sleep(250L);
+	        long startTime = System.currentTimeMillis();
 	        String partialResult = "";
 	        while(bytes >= 0) {
 	        	if((System.currentTimeMillis() - startTime) > (duration*1000L)) {
