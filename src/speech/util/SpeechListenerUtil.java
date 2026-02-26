@@ -61,7 +61,10 @@ public class SpeechListenerUtil {
 	        	wordsSpoken += partialResult;
 	        }
 	        
+            print(wordsSpoken);
+	        
 	        audio.stop();
+	        audio.close();
 	        recognizer.close();
 	        model.close();
 	        return wordsSpoken;

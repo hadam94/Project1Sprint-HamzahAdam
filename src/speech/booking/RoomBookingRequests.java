@@ -22,7 +22,6 @@ public class RoomBookingRequests {
 	
 	private JsonObject loginToken;
 	
-	
 	public void login(String email, String password) {
 		try {
 			URL url = URI.create(SERVER_URL + "/api/v1/member/login/").toURL();
@@ -105,9 +104,6 @@ public class RoomBookingRequests {
 			String response = getResponseFromServer(connection.getInputStream());
 			response = response.substring(1, response.length() - 1);
 			List<JsonObject> jsonObjects = new ArrayList<JsonObject>();
-//			for(String room: response.split(",{")) {
-//				print(room);
-//			}
 			String objectText = "";
 			for(char character: response.toCharArray()) {
 				objectText += character;

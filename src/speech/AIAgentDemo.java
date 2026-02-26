@@ -20,11 +20,24 @@ public class AIAgentDemo {
 	
 	public static void main(String[] args) throws Exception {
 		print("Logging into room booking server...");
-//		ChatModel model = OpenAiChatModel.builder().apiKey(API_KEY).modelName(OpenAiChatModelName.GPT_4_O_MINI).build();
-//
 		RoomBookingRequests booking = new RoomBookingRequests();
 		booking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
-		List<JsonObject> bookings = booking.listAvalibleMeetingRooms();
-		print(bookings);
+		print("Logged in. what do you need?");
+		int i = 0;
+		while(true) {
+			if(i > 0) {
+				print("What do you need?");
+			}
+			String speech = SpeechListenerUtil.getSpeechFromMicrophone(5);
+			ChatModel model = OpenAiChatModel.builder().apiKey(API_KEY).modelName(OpenAiChatModelName.GPT_4_O_MINI).build();
+			StringBuilder builder = new StringBuilder();
+			builder.append(booking.listAvalibleMeetingRooms());
+			builder.append(booking.listMyBookings());
+			String response = model.chat(speech + " " + builder.toString());
+			print(response);
+			print("-------------------------------------------------------------------------------");
+			Thread.sleep(1000L);
+			i++;
+		}
 	}
 }
