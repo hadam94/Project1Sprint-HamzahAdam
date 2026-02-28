@@ -22,7 +22,7 @@ public class RoomBookingRequests {
 	
 	private JsonObject loginToken;
 	
-	public void login(String email, String password) {
+	public boolean login(String email, String password) {
 		try {
 			URL url = URI.create(SERVER_URL + "/api/v1/member/login/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -38,9 +38,11 @@ public class RoomBookingRequests {
 			connection.connect();
 			String response = getResponseFromServer(connection.getInputStream());
 			loginToken = JsonObject.of(response);
+			return true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
 	}
 	
@@ -52,7 +54,7 @@ public class RoomBookingRequests {
 			connection.setConnectTimeout(3000);
 			connection.setDoOutput(true);
 			connection.setRequestProperty("User-Agent", AGENT);
-			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) loginToken.getProperty("token")).getProperty("access"));
+			connection.setRequestProperty("Authorization", " Bearer " + loginToken.<JsonObject>getProperty("token").getProperty("access"));
 			connection.connect();
 			String response = getResponseFromServer(connection.getInputStream());
 			response = response.substring(1, response.length() - 1);
@@ -75,7 +77,7 @@ public class RoomBookingRequests {
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("User-Agent", AGENT);
 			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) loginToken.getProperty("token")).getProperty("access"));
+			connection.setRequestProperty("Authorization", " Bearer " + loginToken.<JsonObject>getProperty("token").getProperty("access"));
 			connection.setDoOutput(true);
 			connection.setConnectTimeout(3000);
 			JsonObject json = new JsonObject();
@@ -99,7 +101,7 @@ public class RoomBookingRequests {
 			connection.setConnectTimeout(3000);
 			connection.setDoInput(true);
 			connection.setRequestProperty("User-Agent", AGENT);
-			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) loginToken.getProperty("token")).getProperty("access"));
+			connection.setRequestProperty("Authorization", " Bearer " + loginToken.<JsonObject>getProperty("token").getProperty("access"));
 			connection.connect();
 			String response = getResponseFromServer(connection.getInputStream());
 			response = response.substring(1, response.length() - 1);
@@ -127,7 +129,7 @@ public class RoomBookingRequests {
 			connection.setConnectTimeout(3000);
 			connection.setRequestProperty("User-Agent", AGENT);
 			connection.setRequestProperty("Content-Type", "application/json");
-			connection.setRequestProperty("Authorization", " Bearer " + ((JsonObject) loginToken.getProperty("token")).getProperty("access"));
+			connection.setRequestProperty("Authorization", " Bearer " + loginToken.<JsonObject>getProperty("token").getProperty("access"));
 			connection.connect();
 			return getResponseFromServer(connection.getInputStream());
 		} catch(IOException e) {

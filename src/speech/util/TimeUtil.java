@@ -7,14 +7,14 @@ public class TimeUtil {
 	/**
 	 * Gets the current system time in a 12-hour time format.
 	 * 
-	 * @return The current time in a JSON Object Format.
+	 * @return The current time in a String Format.
 	 */
-	public static JsonObject getCurrentTime() {
-		JsonObject timeObject = new JsonObject();
+	public static String getCurrentTime() {
 		LocalDateTime date = LocalDateTime.now();
-		timeObject.addProperty("year", date.getYear());
-		timeObject.addProperty("month", date.getMonth().getValue());
-		timeObject.addProperty("day", date.getDayOfMonth());
+		StringBuilder time = new StringBuilder();
+		time.append(date.getYear() + "-");
+		time.append(date.getMonth().getValue() + "-");
+		time.append(date.getDayOfMonth() + " ");
 		int hour = date.getHour();
 		//convert from 24 hour to 12 hour time.
 		if(hour == 0) {
@@ -22,10 +22,10 @@ public class TimeUtil {
 		} else if(hour > 12) {
 			hour -= 12;
 		}
-		timeObject.addProperty("hour", hour);
-		timeObject.addProperty("minute", date.getMinute());
-		timeObject.addProperty("second", date.getSecond());
-		timeObject.addProperty("am/pm", date.getHour() < 12 ? "AM" : "PM");
-	    return timeObject;
+		time.append(hour + ":");
+		String minute = date.getMinute() < 10 ? "0" + date.getMinute() : "" + date.getMinute();
+		time.append(minute + " ");
+		time.append(date.getHour() < 12 ? "AM" : "PM");
+	    return time.toString();
 	}
 }

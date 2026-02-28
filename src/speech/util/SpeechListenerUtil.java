@@ -49,9 +49,11 @@ public class SpeechListenerUtil {
 	            	String[] result = ParseSpeechUtil.parseSpeech(recognizer.getResult()).split(" : ");
 	            	wordsSpoken += result[1];
 	            	partialResult = null;
+	            //	print(wordsSpoken);
 	            } else {
 	            	String[] result = ParseSpeechUtil.parseSpeech(recognizer.getPartialResult()).split(" : ");
 	            	partialResult = result[1];
+	            //	print(wordsSpoken);
 	            }
 	            //read the audio from microphone.
 	        	bytes = audio.read(b, 0, b.length);
@@ -61,7 +63,7 @@ public class SpeechListenerUtil {
 	        	wordsSpoken += partialResult;
 	        }
 	        
-            print(wordsSpoken);
+          //  print(wordsSpoken);
 	        
 	        audio.stop();
 	        audio.close();

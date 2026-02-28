@@ -5,6 +5,8 @@ import static speech.util.PrintUtil.print;
 import java.util.List;
 import java.util.Scanner;
 
+import org.junit.Test;
+
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.input.PromptTemplate;
@@ -13,31 +15,60 @@ import dev.langchain4j.model.openai.OpenAiChatModelName;
 import speech.booking.RoomBookingRequests;
 import speech.util.JsonObject;
 import speech.util.SpeechListenerUtil;
+import speech.util.TimeUtil;
 
 public class AIAgentDemo {
 	
     private static final String API_KEY = "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";
 	
+	@SuppressWarnings("resource")
+	@Test
 	public static void main(String[] args) throws Exception {
+		String time = TimeUtil.getCurrentTime();
+		Scanner scanner = new Scanner(System.in);
+
 		print("Logging into room booking server...");
 		RoomBookingRequests booking = new RoomBookingRequests();
-		booking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
-		print("Logged in. what do you need?");
-		int i = 0;
+		boolean loggedIn = booking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		if(!loggedIn) {
+			print("Failed to log in! exiting...");
+			System.exit(-1);
+			return;
+		}
+		
+		print("Logged in. Loading GPT-5 AI Model...");
+		
+		ChatModel model = OpenAiChatModel.builder().apiKey(API_KEY).modelName(OpenAiChatModelName.GPT_5).build();
+		print("Loaded AI Model. ", false);
+		
 		while(true) {
-			if(i > 0) {
-				print("What do you need?");
+			print("Please press enter to start speaking, or type EXIT to finish.");
+			
+			String action = scanner.nextLine();
+			if(action.equalsIgnoreCase("exit")) {
+				print("Closing program...");
+				System.exit(-1);
+				break;
 			}
-			String speech = SpeechListenerUtil.getSpeechFromMicrophone(5);
-			ChatModel model = OpenAiChatModel.builder().apiKey(API_KEY).modelName(OpenAiChatModelName.GPT_4_O_MINI).build();
+			
+			print("Setting up microphone...");
+			String speechPrompt = SpeechListenerUtil.getSpeechFromMicrophone(10);
+			print("Prompt: " + speechPrompt);
+			
 			StringBuilder builder = new StringBuilder();
-			builder.append(booking.listAvalibleMeetingRooms());
-			builder.append(booking.listMyBookings());
-			String response = model.chat(speech + " " + builder.toString());
+			if(speechPrompt.contains("room")) {
+				for(JsonObject object: booking.listAvalibleMeetingRooms()) {
+					builder.append(object);
+				}
+			} 
+			if(speechPrompt.contains("reservation")) {
+				builder.append(booking.listMyBookings());
+			}
+			String response = model.chat("Todays time is " + time + "." + speechPrompt + "\n\n " + builder.toString());
+			
 			print(response);
-			print("-------------------------------------------------------------------------------");
+			print("-------------------------------------------------------------------------------------------------------------------");
 			Thread.sleep(1000L);
-			i++;
 		}
 	}
 }
