@@ -64,6 +64,7 @@ public class AIAgentDemo {
 			if(speechPrompt.contains("reservation")) {
 				builder.append(booking.listMyBookings());
 			}
+			
 			String response = model.chat("Todays time is " + time + "." + speechPrompt + "\n\n " + builder.toString());
 			
 			print(response);

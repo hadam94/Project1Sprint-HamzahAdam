@@ -138,6 +138,10 @@ public class RoomBookingRequests {
 		}
 	}
 	
+	public JsonObject getLoginToken() {
+		return loginToken;
+	}
+	
 	private static String getResponseFromServer(InputStream stream) throws IOException {
 		String response = "";
 		while(true) {
