@@ -15,7 +15,7 @@ import speech.util.TimeUtil;
 
 public class AIAgentDemo {
 	
-    private static final String API_KEY = "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";
+    public static final String API_KEY = "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";
 	
 	@SuppressWarnings("resource")
 	@Tool(name = "AI Agent Demo Tool", value = "An AI Agent that will assist you in information regarding reservations, rooms, and times.") 
@@ -32,9 +32,9 @@ public class AIAgentDemo {
 			return;
 		}
 		
-		print("Logged in. Loading GPT-5 AI Model...");
+		print("Logged in. Loading GPT-4o Mini AI Model...");
 		
-		ChatModel model = OpenAiChatModel.builder().apiKey(API_KEY).modelName(OpenAiChatModelName.GPT_5).build();
+		ChatModel model = OpenAiChatModel.builder().apiKey(API_KEY).modelName(OpenAiChatModelName.GPT_4_O_MINI).build();
 		print("Loaded AI Model. ", false);
 		
 		while(true) {
@@ -48,23 +48,32 @@ public class AIAgentDemo {
 			}
 			
 			print("Setting up microphone...");
-			String speechPrompt = SpeechListenerUtil.getSpeechFromMicrophone(10);
+			String speechPrompt;
+			//speechPrompt = SpeechListenerUtil.getSpeechFromMicrophone(10);
+			speechPrompt = "When is my reservation for Welcome Center206?";
 			print("Prompt: " + speechPrompt);
 			
-			StringBuilder builder = new StringBuilder();
-			if(speechPrompt.contains("room")) {
-				for(JsonObject object: booking.listAvalibleMeetingRooms()) {
-					builder.append(object);
-				}
-			} 
-			if(speechPrompt.contains("reservation")) {
-				builder.append(booking.listMyBookings());
+			StringBuilder roomsList = new StringBuilder();
+			for(JsonObject object: booking.listAvalibleMeetingRooms()) {
+				roomsList.append(object + ",");
 			}
 			
-			String response = model.chat("Todays time is " + time + "." + speechPrompt + "\n\n " + builder.toString());
+			//the list of bookings, massive
+			StringBuilder bookedRooms = new StringBuilder();
+			if(speechPrompt.contains("reservation") || speechPrompt.contains("room")) {
+				int i = 0;
+				for(JsonObject object: booking.listMyBookings()) {
+					if(i < 2500) {
+						bookedRooms.append(object.toString().replaceAll("" + '"', "") + "\n");
+					}
+					i++;
+				}
+			}
+			
+			String response = model.chat("Todays time is " + time + ". \n" + "The current rooms are: " + roomsList.toString() + "\n The booked rooms are: " + bookedRooms.toString() + "\n\n " + speechPrompt);
 			
 			print(response);
-			print("-------------------------------------------------------------------------------------------------------------------");
+			print("------------------------------------------------------------------------------------------------------------------------------------------");
 			Thread.sleep(1000L);
 		}
 	}

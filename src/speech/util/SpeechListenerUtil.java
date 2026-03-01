@@ -96,10 +96,14 @@ public class SpeechListenerUtil {
 	        while(bytes >= 0) {
 	        	if(recognizer.acceptWaveForm(b, bytes)) {
 	        		speech = ParseSpeechUtil.parseSpeech(recognizer.getResult()).split(" : ")[1];
-	        		System.out.println(speech);
+	        		if(printSpeech) {
+	        			print(speech);
+	        		}
 	        	} else {
 	        		speech = ParseSpeechUtil.parseSpeech(recognizer.getPartialResult()).split(" : ")[1];
-	        		System.out.println(speech);
+	        		if(printSpeech) {
+	        			print(speech);
+	        		}
 	        	}
 	        	bytes = audioStream.read(b);
 	        }
