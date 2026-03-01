@@ -2,14 +2,10 @@ package speech;
 
 import static speech.util.PrintUtil.print;
 
-import java.util.List;
 import java.util.Scanner;
 
-import org.junit.Test;
-
+import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.input.Prompt;
-import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModelName;
 import speech.booking.RoomBookingRequests;
@@ -22,7 +18,7 @@ public class AIAgentDemo {
     private static final String API_KEY = "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";
 	
 	@SuppressWarnings("resource")
-	@Test
+	@Tool(name = "AI Agent Demo Tool", value = "An AI Agent that will assist you in information regarding reservations, rooms, and times.") 
 	public static void main(String[] args) throws Exception {
 		String time = TimeUtil.getCurrentTime();
 		Scanner scanner = new Scanner(System.in);
