@@ -14,7 +14,7 @@ When you run the program, you will be prompted the following options:
 **RELOAD**: Reloads current booking information stored from the server.
 **EXIT**: Exits the program
 
-When you press enter on your keyboard, the microphone will be set up, and you will have 10 seconds to say a prompt. After 10 seconds is passed, an AI generated response will be shown in the console, based off of what you asked and the current booked rooms that are currently in the server. After this, you will be prompted the 3 options shown above.
+When you press **enter** on your keyboard, the microphone will be set up, and you will have 10 seconds to say a prompt. After 10 seconds is passed, an AI generated response will be shown in the console, based off of what you asked and the current booked rooms that are currently in the server. After this, you will be prompted the 3 options shown above.
 
 When you enter **exit** (not case sensitive) in the terminal, the program will close and the process will be terminated. simple as that.
 
