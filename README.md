@@ -20,4 +20,4 @@ When you enter **exit** (not case sensitive) in the terminal, the program will c
 
 When you enter **reload** (not case sensitive) in the terminal, the program will reload all current booking information stored in the booking server. This can be useful as somebody else could potentially book a new appointment while an AI generated response is happeneing at the same time, so it's important to use command from time to time.
 
-As for secrets, due to time constraints, I was not able to hide the API Key in time, which is not good for security. However, I will assume that everyone does will not take advantage of the API Key being exposed, and using to do things like spamming API Requests or to drain the amount of credits that I currently have.
+As for secrets, due to time constraints, I was not able to hide the API Key in time, which is not good for security. However, I will assume that everyone won't take advantage of the API Key being exposed, and using to do things like spamming API Requests or to drain the amount of credits that I currently have.
