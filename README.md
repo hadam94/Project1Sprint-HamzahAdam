@@ -9,4 +9,15 @@ Simply run the SpeechDemo.java file or the BookingDemo.java file through the IDE
 
 **How to use the program?**
 
-When you run the program, you will be prompted to press enter to start speaking, or exit. when you press enter, the microphone will be setup and the program will alert you once that has been set up. When the microphone has been setup, you have 10 seconds to speak your prompt. After that time has passed, the prompt that you have speaken will be shown in the console, and then it will be feeded into the AI model, along with the list of rooms and bookings that have been done, which the AI will generate a response based on. After the AI generates a response (which may take some time due to a large amount of bookings being currently in the server as of 3/1) you will be prompted again if you want to speak or press exit. If you type **exit** (not case sensitive) into the terminal and press enter, the program will terminate.
+When you run the program, you will be prompted the following options:
+**ENTER**: Start speaking into the microphone
+**RELOAD**: Reloads current booking information stored from the server.
+**EXIT**: Exits the program
+
+When you press enter on your keyboard, the microphone will be set up, and you will have 10 seconds to say a prompt. After 10 seconds is passed, an AI generated response will be shown in the console, based off of what you asked and the current booked rooms that are currently in the server. After this, you will be prompted the 3 options shown above.
+
+When you enter **exit** (not case sensitive) in the terminal, the program will close and the process will be terminated. simple as that.
+
+When you enter **reload** (not case sensitive) in the terminal, the program will reload all current booking information stored in the booking server. This can be useful as somebody else could potentially book a new appointment while an AI generated response is happeneing at the same time, so it's important to use command from time to time.
+
+As for secrets, due to time constraints, I was not able to hide the API Key in time, which is not good for security. However, I will assume that everyone does will not take advantage of the API Key being exposed, and using to do things like spamming API Requests or to drain the amount of credits that I currently have.
