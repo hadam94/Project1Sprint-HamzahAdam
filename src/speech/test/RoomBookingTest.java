@@ -59,10 +59,10 @@ public class RoomBookingTest {
 		RoomBookingRequests booking = new RoomBookingRequests();
 		booking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
 		//Booking room for 15 minutes
-		JsonObject firstResponse = booking.bookMeetingRoom("2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
+		JsonObject firstResponse = booking.bookMeetingRoom(1, "2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
 		print(firstResponse);
 		assertEquals("Room Not created.", "Meeting room booked successfully.", firstResponse.getProperty("message"));
-		JsonObject secondResponse = booking.bookMeetingRoom("2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
+		JsonObject secondResponse = booking.bookMeetingRoom(1, "2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
 		print(secondResponse);
 		assertEquals("Room creation did not fail on 2nd try.", true, secondResponse.hasProperty("error"));
 	}

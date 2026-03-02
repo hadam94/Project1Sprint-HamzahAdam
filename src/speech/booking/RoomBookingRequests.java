@@ -70,9 +70,9 @@ public class RoomBookingRequests {
 		}
 	}
 	
-	public JsonObject bookMeetingRoom(String startTime, String endTime, int people) {
+	public JsonObject bookMeetingRoom(int bookingId, String startTime, String endTime, int people) {
 		try {
-			URL url = URI.create(SERVER_URL + "/api/v1/meeting-rooms/1/book/").toURL();
+			URL url = URI.create(SERVER_URL + "/api/v1/meeting-rooms/" + bookingId + "/book/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("User-Agent", AGENT);

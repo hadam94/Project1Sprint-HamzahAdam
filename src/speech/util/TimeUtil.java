@@ -13,8 +13,10 @@ public class TimeUtil {
 		LocalDateTime date = LocalDateTime.now();
 		StringBuilder time = new StringBuilder();
 		time.append(date.getYear() + "-");
-		time.append(date.getMonth().getValue() + "-");
-		time.append(date.getDayOfMonth() + " ");
+		String month = date.getMonth().getValue() < 10 ? "0" + date.getMonth().getValue() : "" + date.getMonth().getValue();
+		time.append(month + "-");
+		String day = date.getDayOfMonth() < 10 ? "0" + date.getDayOfMonth() : "" + date.getDayOfMonth();
+		time.append(day + " ");
 		int hour = date.getHour();
 		//convert from 24 hour to 12 hour time.
 		if(hour == 0) {

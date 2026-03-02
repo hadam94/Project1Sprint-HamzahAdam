@@ -1,5 +1,7 @@
 package speech.test;
 
+import static speech.util.PrintUtil.print;
+
 import java.io.File;
 
 import org.junit.Test;
@@ -9,11 +11,10 @@ import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModelName;
 import speech.AIAgentDemo;
 import speech.booking.RoomBookingRequests;
+import speech.util.APIKeys;
 import speech.util.JsonObject;
 import speech.util.SpeechListenerUtil;
-import speech.util.TimeUtil;
-
-import static speech.util.PrintUtil.print;;
+import speech.util.TimeUtil;;
 
 public class AIDemoTest {
 	
@@ -23,7 +24,7 @@ public class AIDemoTest {
 	@Test
 	public void reservationInfoFromVoiceFile() {
 		String speech = SpeechListenerUtil.getSpeechFromAudioFile(new File("assets/sounds/reservation.wav"), false);
-		ChatModel model = OpenAiChatModel.builder().apiKey(AIAgentDemo.API_KEY).modelName(OpenAiChatModelName.GPT_5).build();
+		ChatModel model = OpenAiChatModel.builder().apiKey(APIKeys.AI_KEY).modelName(OpenAiChatModelName.GPT_5).build();
 		RoomBookingRequests booking = new RoomBookingRequests();
 		booking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
 		String time = TimeUtil.getCurrentTime();
@@ -45,5 +46,22 @@ public class AIDemoTest {
 			}
 			i++;
 		}	
+	}
+	
+	/**
+	 * This test will create a room, ask information about it through the AI, and delete the room afterwards.
+	 */
+	@Test
+	public void createAndDeleteRoomTest() {
+		RoomBookingRequests booking = new RoomBookingRequests();
+		print(TimeUtil.getCurrentTime());
+		booking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		int id = 1231327833;
+		booking.bookMeetingRoom(id, "2026-04-29 11:10 AM", "2026-04-29 11:20 PM", 1);
+		String speech = SpeechListenerUtil.getSpeechFromAudioFile(new File("assets/sounds/reservation.wav"), false);
+		ChatModel model = OpenAiChatModel.builder().apiKey(APIKeys.AI_KEY).modelName(OpenAiChatModelName.GPT_5).build();
+		String response = model.chat(speech);
+		print(response);
+		booking.cancelMeetingRoom(id);
 	}
 }
