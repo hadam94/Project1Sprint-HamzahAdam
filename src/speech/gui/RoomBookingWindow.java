@@ -14,23 +14,21 @@ import javax.swing.Timer;
 import speech.util.PrintUtil;
 
 
-public class GuiWindow extends JFrame {
+public class RoomBookingWindow extends JFrame {
 	
 	private final Dimension windowDimension = new Dimension(1000, 1000);
 	
 	private final TextField roomname;
-	private static GuiWindow instance;
-	
-	int x = 0;
-	
-	public GuiWindow() {
+	private static RoomBookingWindow instance;
+		
+	public RoomBookingWindow() {
 		instance = this;
 		setResizable(false);
 		setSize(windowDimension);
 		setTitle("Server Test");
 		addWindowListener(new WindowOnCloseListener());
 		
-		roomname = ComponentCreator.addTextBoxComponent("Room Name", new Point(100, windowDimension.height - 300), new Dimension(100, 20), null);
+		roomname = ComponentCreator.addTextBoxComponent("Room Name", new Point(50, windowDimension.height - 200), new Dimension(200, 20), null);
 		ComponentCreator.addButtonComponent("Add Room", new Point(100, windowDimension.height - 100), new Dimension(100, 50), (e) -> PrintUtil.print("Add Room"));
 		
 		
@@ -39,14 +37,16 @@ public class GuiWindow extends JFrame {
 		setVisible(true);
 	}
 	
-	public static GuiWindow getInstance() {
+	public static RoomBookingWindow getInstance() {
 		return instance;
 	}
 	
-	public void onRender(Graphics2D graphics) {
-		x++;
-		graphics.drawString("Hello", x, 50);	
-		PrintUtil.print("called " + Math.random());
+	private void onRender(Gui gui) {
+		gui.push();
+		gui.graphics().translate(500, 500);
+		gui.graphics().drawString("Mallard", 0, 0);
+		gui.pop();
+		gui.graphics().drawString("Maqeqwllard", 10, 10);
 	}
 	
 	private class RenderEvent extends JPanel {
@@ -64,7 +64,8 @@ public class GuiWindow extends JFrame {
 		protected void paintComponent(Graphics g) {
 			// TODO Auto-generated method stub
 			super.paintComponent(g);
-			onRender((Graphics2D) g);
+			Gui gui = new Gui((Graphics2D) g);
+			onRender(gui);
 		}
 	}
 }

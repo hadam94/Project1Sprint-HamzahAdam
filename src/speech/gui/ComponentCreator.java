@@ -16,7 +16,7 @@ public class ComponentCreator {
 			button.addActionListener(action);
 		}
 		button.setVisible(true);
-		GuiWindow.getInstance().add(button);
+		RoomBookingWindow.getInstance().add(button);
 		return button;
 	}
 	
@@ -28,7 +28,7 @@ public class ComponentCreator {
 			field.addActionListener(action);
 		}
 		field.setVisible(true);
-		GuiWindow.getInstance().add(field);
+		RoomBookingWindow.getInstance().add(field);
 		return field;
 	}
 

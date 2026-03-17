@@ -1,11 +1,11 @@
 package speech;
 
-import speech.gui.GuiWindow;
+import speech.gui.RoomBookingWindow;
 
 public class ServerDemo {
 	
 	public static void main(String[] args) {
-		GuiWindow window = new GuiWindow();
+		RoomBookingWindow window = new RoomBookingWindow();
 	}
 
 }
