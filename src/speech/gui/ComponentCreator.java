@@ -20,9 +20,8 @@ public class ComponentCreator {
 		return button;
 	}
 	
-	public static TextField addTextBoxComponent(String name, Point position, Dimension size, ActionListener action) {
+	public static TextField addTextBoxComponent(Point position, Dimension size, ActionListener action) {
 		TextField field = new TextField();
-		field.setName(name);
 		field.setBounds(position.x, position.y, size.width, size.height);
 		if(action != null) {
 			field.addActionListener(action);
