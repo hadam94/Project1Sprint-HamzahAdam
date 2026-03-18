@@ -7,6 +7,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.TextField;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -43,7 +46,19 @@ public class RoomBookingWindow extends JFrame {
 
 		roomnameAdd = ComponentCreator.addTextBoxComponent(new Point(50, buttonY - 100), textBoxDimension, null);
 		capacityAdd = ComponentCreator.addTextBoxComponent(new Point(50, buttonY - 50), textBoxDimension, null);
-		ComponentCreator.addButtonComponent("Add Room", new Point(100, buttonY), buttonDimensions, (e) -> PrintUtil.print("Add Room"));
+		ComponentCreator.addButtonComponent("Add Room", new Point(100, buttonY), buttonDimensions, (action) -> {
+			String roomName = roomnameAdd.getText();
+			int capacity = -1;
+			try {
+				capacity = Integer.parseInt(capacityAdd.getText());
+			} catch(Exception e) {
+				
+			}
+			if(capacity < 0) {
+				PrintUtil.print("Invalid capacity!");
+				return;
+			}
+		});
 	
 		
 		roomIdRemove = ComponentCreator.addTextBoxComponent(new Point((int) (windowDimension.width / 2) - (textBoxDimension.width / 2), buttonY - 50), textBoxDimension, null);

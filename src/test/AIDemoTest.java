@@ -1,4 +1,4 @@
-package speech.test;
+package test;
 
 import static speech.util.PrintUtil.print;
 
