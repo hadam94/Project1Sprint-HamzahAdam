@@ -1,2 +1,4 @@
-/speech/
-/test/
+/AIDemoTest.class
+/RoomBookingTest.class
+/SQLServerTest.class
+/SoundFileTest.class
