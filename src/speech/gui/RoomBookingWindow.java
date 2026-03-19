@@ -83,9 +83,13 @@ public class RoomBookingWindow extends JFrame {
 				status = ("Invalid capacity/room name!");
 				return;
 			}
-			bookingSession.addMeetingRoom(roomName, capacity);
-			updateAvaliableMeetingRooms();
-			status = "Added new room.";
+			boolean added = bookingSession.addMeetingRoom(roomName, capacity);
+			if(added) {
+				updateAvaliableMeetingRooms();
+				status = "Added new room.";
+			} else {
+				status = "Failed to add new room.";	
+			}
 		});
 		
 		roomIdRemove = ComponentCreator.addTextBoxComponent(new Point((int) (windowDimension.width / 2) - (textBoxDimension.width / 2), buttonY - 50), textBoxDimension, null);
@@ -94,8 +98,19 @@ public class RoomBookingWindow extends JFrame {
 				int id = Integer.parseInt(roomIdRemove.getText());
 				boolean removed = bookingSession.removeMeetingRoom(id);
 				if(removed) {
-					updateAvaliableMeetingRooms();
-					status = "Removed room " + id;
+					boolean flag = false;
+					for(String item: roomsList.getItems()) {
+						if(JsonObject.of(item).getProperty("id").equals(id)) {
+							flag = true;
+							break;
+						}
+					}
+					if(!flag) {
+						status = "Room " + id + " currently doesn't exist on the server.";
+						return;
+					} else {
+						status = "Removed room " + id + ".";
+					}
 					java.util.List<JsonObject> currentBookings = bookingSession.listMyBookings();
 					java.util.List<JsonObject> cancelledBookings = new ArrayList<>();
 					BufferedWriter writer = new BufferedWriter(new FileWriter("assets/report/report.txt"));
@@ -112,6 +127,7 @@ public class RoomBookingWindow extends JFrame {
 						writer.newLine();
 					}
 					writer.close();
+					updateAvaliableMeetingRooms();
 				} else {
 					status = "This meeting room id doesn't exist.";
 				}
@@ -129,7 +145,7 @@ public class RoomBookingWindow extends JFrame {
 				boolean changed = bookingSession.changeRoomCapacity(meetingRoomId, newCapacity);
 				if(changed) {
 					updateAvaliableMeetingRooms();
-					status = "Changed room capacity of room " + meetingRoomId;
+					status = "Changed room capacity of room " + meetingRoomId + ".";
 				} else {
 					status = "This meeting room id doesn't exist.";
 				}

@@ -30,8 +30,8 @@ public class RoomBookingRequests {
 	 * and use hadam@student.bridgew.edu as the email and cs490 as the password. then grab these sessions from inspect element, the sessions 
 	 * will be good for a couple of hours. Due to time constraints, a proper sql system was not able to be done.
 	 */
-	private String cookieSession = "csrftoken=Dr8IyPnt4tL7mPcCyBBophQK0ucdNrLA; sessionid=vdj1wi1u0pfu25thdhcr3c5cf0cftrzn";
-	private String csrfmiddlewaretoken = "EHyEYdYlZgI9RFEF1dkEM5N1C9IzRxjwq6IvW9ngoWmMCS3dsz1K8IDyqs1oYTwM";
+	private String cookieSession = "csrftoken=hvCtdHn6efx84EdSBuhoDlopFTg7Fhir; sessionid=kogmjdq35g6z2r803k0vj904uoyr9xwa";
+	private String csrfmiddlewaretoken = "6xiAe0wslAK5nVTGgGUZzNH6htWdDRmodSKThxJopF73hpWoH01d2YVlMc2a8YuF";
 	
 	public boolean login(String email, String password) {
 		try {
@@ -193,7 +193,7 @@ public class RoomBookingRequests {
 			connection.setDoOutput(true);
 			connection.getOutputStream().write(("csrfmiddlewaretoken=" + csrfmiddlewaretoken + "&post=yes").getBytes());
 			connection.connect();
-			getResponseFromServer(connection.getInputStream());
+			String response = getResponseFromServer(connection.getInputStream());
 			return true;
 		} catch(Exception e) {
 			e.printStackTrace();
