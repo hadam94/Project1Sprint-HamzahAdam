@@ -192,6 +192,16 @@ public class RoomBookingRequests {
 	*/
 	public boolean removeMeetingRoom(int meetingRoomId) {
 		try {
+			boolean validMeetingRoom = false;
+			for(JsonObject object: listAvalibleMeetingRooms()) {
+				if(object.getProperty("id").equals(meetingRoomId)) {
+					validMeetingRoom = true;
+					break;
+				}
+			}
+			if(!validMeetingRoom) {
+				return false;
+			}
 			URL url = URI.create(SERVER_URL + "/admin/booking/meetingroom/" + meetingRoomId + "/delete/").toURL();
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");

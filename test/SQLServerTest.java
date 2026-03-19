@@ -34,8 +34,8 @@ public class SQLServerTest {
 			print("Login session failed! exiting");
 			return;
 		}
-		boolean added = bookingSession.removeMeetingRoom(65);
-		assertEquals(true, added);
+		boolean removed = bookingSession.removeMeetingRoom(71);
+		assertEquals(true, removed);
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public class SQLServerTest {
 			print("Login session failed! exiting");
 			return;
 		}
-		boolean added = bookingSession.changeRoomCapacity(2, 744);
-		assertEquals(true, added);
+		boolean changed = bookingSession.changeRoomCapacity(2, 744);
+		assertEquals(true, changed);
 	}
 }
