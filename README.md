@@ -32,3 +32,5 @@ Refresh: Refreshes the current room list from the server
 
 There is error handling built into the GUI. if you input invalid characters into the text box or if something on the server doesn't exist, the status message, displayed in the middle of the screen will let you know.
 The rooms list is a scrollable box located in the center of the GUI. It shows all rooms present in the server in a JSON format. 
+
+There is also AI Assistance in this program, that will tell you what room you changed capcity, added, and removed inside the console. 
