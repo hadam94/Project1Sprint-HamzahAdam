@@ -14,12 +14,12 @@ Before running the program, you want to do the following steps:
 Go onto http://45.55.230.108:8000/admin/ 
 Open inspect element, and go into the Network Tab
 Enter ``hadam@student.bridgew.edu`` as the email and ``cs490`` as the password
-When you log in, Click on the http://45.55.230.108:8000/admin/login/?next=/admin/ packet that has the POST request
-Click on Payload, and copy the value and paste it into the RoomBookingRequests.java file. make sure to override the csrfmiddlewaretoken field variable with the one you copied.
+
+When you log in, go to the ``admin/`` packet (http://45.55.230.108:8000/admin/ with GET request), and look for the Cookie Request header. copy it's value, and paste it into the cookieSession field that is located inside RoomBookingRequests.java. The value should look something like ``csrftoken=DbyoyAxCiX2SXsxxaCfPmTWIvEr2CU2R; sessionid=renfzygcpapyhusxh2cwohpdysvgqewn``
+
+After doing that, click on Add next to meeting rooms, and add a meeting room with any name and capacity. Make sure inspect element is open. Click on save after making the room. once you added the room, Go to the ``add/`` packet recieved, which should be a POST request and have a url of ``http://45.55.230.108:8000/admin/booking/meetingroom/add/``. Now click on the Payload tab, and copy the csrfmiddlewaretoken value (should look something like ``zt9ZzKb6k6sI88CHdVSCXs7K4FObIROK76QI7Q7wIy4GRRjDHRmDTLL6tXldECYN``), and paste the value into the csrfmiddlewaretoken String field located inside of RoomBookingRequests.java (same file as for the cookieSession).
 
 The sessions will be good for a couple of hours. If you get errors when attempting to do operations in the GUI, simply repeat the steps above.
-
-Now, go to the next packet (http://45.55.230.108:8000/admin/ with GET request), and look for the Cookie request header. copy it's value, and paste it into the cookieSession field that is located inside RoomBookingRequests.java.
 
 Once that is done, you can run the GUI by running the ServerDemo.java file
 There will be an Add Room, Remove Room, Change Capacity, and Refresh Button.
