@@ -69,8 +69,8 @@ public class RoomBookingWindow extends JFrame {
 		Dimension buttonDimensions = new Dimension(100, 50);
 		int buttonY = 175;
 
-		roomnameAdd = ComponentCreator.addTextBoxComponent(new Point(50, buttonY - 100), textBoxDimension, null);
-		capacityAdd = ComponentCreator.addTextBoxComponent(new Point(50, buttonY - 50), textBoxDimension, null);
+		roomnameAdd = ComponentCreator.addTextBoxComponent(new Point(50, buttonY - 100), textBoxDimension);
+		capacityAdd = ComponentCreator.addTextBoxComponent(new Point(50, buttonY - 50), textBoxDimension);
 		ComponentCreator.addButtonComponent("Add Room", new Point(100, buttonY), buttonDimensions, (action) -> {
 			String roomName = roomnameAdd.getText();
 			int capacity = -1;
@@ -92,20 +92,13 @@ public class RoomBookingWindow extends JFrame {
 			}
 		});
 		
-		roomIdRemove = ComponentCreator.addTextBoxComponent(new Point((int) (windowDimension.width / 2) - (textBoxDimension.width / 2), buttonY - 50), textBoxDimension, null);
+		roomIdRemove = ComponentCreator.addTextBoxComponent(new Point((int) (windowDimension.width / 2) - (textBoxDimension.width / 2), buttonY - 50), textBoxDimension);
 		ComponentCreator.addButtonComponent("Remove Room", new Point((int) (windowDimension.width / 2) - (buttonDimensions.width / 2), buttonY), buttonDimensions, (action) -> {
 			try {
 				int id = Integer.parseInt(roomIdRemove.getText());
 				boolean removed = bookingSession.removeMeetingRoom(id);
 				if(removed) {
-					boolean flag = false;
-					for(String item: roomsList.getItems()) {
-						if(JsonObject.of(item).getProperty("id").equals(id)) {
-							flag = true;
-							break;
-						}
-					}
-					if(!flag) {
+					if(getRoomById(id) == null) {
 						status = "Room " + id + " currently doesn't exist on the server.";
 						return;
 					} else {
@@ -132,20 +125,25 @@ public class RoomBookingWindow extends JFrame {
 					status = "This meeting room id doesn't exist.";
 				}
 			} catch(Exception e) {
-				status = "Please enter a meeting room id number.";
+				status = "Please enter a valid meeting room id number.";
 			}
 		});
 
-		roomIdChange = ComponentCreator.addTextBoxComponent(new Point(windowDimension.width - (int)(textBoxDimension.width + 50), buttonY - 100), textBoxDimension, null);
-		capacityChange = ComponentCreator.addTextBoxComponent(new Point(windowDimension.width - (int)(textBoxDimension.width + 50), buttonY - 50), textBoxDimension, null);
+		roomIdChange = ComponentCreator.addTextBoxComponent(new Point(windowDimension.width - (int)(textBoxDimension.width + 50), buttonY - 100), textBoxDimension);
+		capacityChange = ComponentCreator.addTextBoxComponent(new Point(windowDimension.width - (int)(textBoxDimension.width + 50), buttonY - 50), textBoxDimension);
 		ComponentCreator.addButtonComponent("Change Capacity", new Point(windowDimension.width - (buttonDimensions.width + 100), buttonY), buttonDimensions, (action) -> {
 			try {
 				int meetingRoomId = Integer.parseInt(roomIdChange.getText());
-				int newCapacity = Integer.parseInt(capacityChange.getText());
-				boolean changed = bookingSession.changeRoomCapacity(meetingRoomId, newCapacity);
+				boolean changed = bookingSession.changeRoomCapacity(meetingRoomId, Integer.parseInt(capacityChange.getText()));
 				if(changed) {
+					int oldCapacity = getRoomById(meetingRoomId).getProperty("capacity");
 					updateAvaliableMeetingRooms();
-					status = "Changed room capacity of room " + meetingRoomId + ".";
+					int newCapacity = getRoomById(meetingRoomId).getProperty("capacity");
+					if(oldCapacity == newCapacity) {
+						status = "Room " + meetingRoomId + " already has a capacity of " + oldCapacity + ".";
+					} else {
+						status = "Changed room capacity of room " + meetingRoomId + " from " + oldCapacity + " to " + newCapacity + ".";
+					}
 				} else {
 					status = "This meeting room id doesn't exist.";
 				}
@@ -160,7 +158,8 @@ public class RoomBookingWindow extends JFrame {
 		});
 
 		updateAvaliableMeetingRooms();
-		roomsList.setBounds(300, 310, 300, 300);
+		int width = 355;
+		roomsList.setBounds((windowDimension.width / 2) - (width / 2) , 310, width, 350);
 		roomsList.setVisible(true);
 		add(roomsList);
 		add(new CustomPanel());
@@ -206,11 +205,27 @@ public class RoomBookingWindow extends JFrame {
 		gui.drawCenteredString(new Font("arial", 1, 12), status, windowDimension.width / 2, 700, Color.BLACK);
 	}
 	
+	//Update rooms list from server after performing an action.
 	private void updateAvaliableMeetingRooms() {
 		roomsList.removeAll();
 		for(JsonObject object: bookingSession.listAvalibleMeetingRooms()) {
 			roomsList.add(object.toString());
 		}
+	}
+	
+	/**
+	 * Returns a room based off of your id inputted into parameter.
+	 * @param id The room id that you want.
+	 * @return A JsonObject based off of ID. Null if room doesn't exist
+	*/
+	public JsonObject getRoomById(int id) {
+		for(String item: roomsList.getItems()) {
+			JsonObject room = JsonObject.of(item);
+			if(room.getProperty("id").equals(id)) {
+				return room;
+			}
+		}
+		return null;
 	}
 	
 	private class CustomPanel extends JPanel {

@@ -30,8 +30,8 @@ public class RoomBookingRequests {
 	 * and use hadam@student.bridgew.edu as the email and cs490 as the password. then grab these sessions from inspect element, the sessions 
 	 * will be good for a couple of hours. Due to time constraints, a proper sql system was not able to be done.
 	 */
-	private String cookieSession = "csrftoken=hvCtdHn6efx84EdSBuhoDlopFTg7Fhir; sessionid=kogmjdq35g6z2r803k0vj904uoyr9xwa";
-	private String csrfmiddlewaretoken = "6xiAe0wslAK5nVTGgGUZzNH6htWdDRmodSKThxJopF73hpWoH01d2YVlMc2a8YuF";
+	private String cookieSession = "csrftoken=INRTIg6AyCM8TTR6E6Eb6tOwzsHc6Vkd; sessionid=24ky66ib9q3m64n8uq6sokwograsg31j";
+	private String csrfmiddlewaretoken = "zt9ZzKb6k6sI88CHdVSCXs7K4FObIROK76QI7Q7wIy4GRRjDHRmDTLL6tXldECYN";
 	
 	public boolean login(String email, String password) {
 		try {
@@ -157,6 +157,12 @@ public class RoomBookingRequests {
 		}
 	}
 	
+	/**
+	 * Add a new room to the server.
+	 * @param name The name of your room.
+	 * @param capacity how many bookings can that room hold.
+	 * @return whether or not the room addition was successful.
+	*/
 	public boolean addMeetingRoom(String name, int capacity) {
 		try {
 			URL url = URI.create(SERVER_URL + "/admin/booking/meetingroom/add/").toURL();
@@ -179,6 +185,11 @@ public class RoomBookingRequests {
 		}
 	}
 	
+	/**
+	 * Remove a room based off of the meeting room id.
+	 * @param The meetingRoomId, which is the room you want to remove from the server.
+	 * @return whether or not the room removal was successful.
+	*/
 	public boolean removeMeetingRoom(int meetingRoomId) {
 		try {
 			URL url = URI.create(SERVER_URL + "/admin/booking/meetingroom/" + meetingRoomId + "/delete/").toURL();
@@ -193,7 +204,7 @@ public class RoomBookingRequests {
 			connection.setDoOutput(true);
 			connection.getOutputStream().write(("csrfmiddlewaretoken=" + csrfmiddlewaretoken + "&post=yes").getBytes());
 			connection.connect();
-			String response = getResponseFromServer(connection.getInputStream());
+			getResponseFromServer(connection.getInputStream());
 			return true;
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -202,6 +213,12 @@ public class RoomBookingRequests {
 
 	}
 	
+	/**
+	 * Changes the room capacity.
+	 * @param meetingRoomId which is the room you want to change capacity of.
+	 * @param newCapacity the new capacity of the room you want.
+	 * @return whether or not the room capacity change was successful.
+	*/
 	public boolean changeRoomCapacity(int meetingRoomId, int newCapacity) {
 		try {
 			URL url = URI.create(SERVER_URL + "/admin/booking/meetingroom/" + meetingRoomId + "/change/").toURL();
@@ -214,17 +231,10 @@ public class RoomBookingRequests {
 			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			connection.setRequestProperty("User-Agent", AGENT);
 			connection.setDoOutput(true);
-			String roomName = null;
-			for(String element: RoomBookingWindow.getInstance().getRoomsList().getItems()) {
-				JsonObject object = JsonObject.of(element);
-				if(object.getProperty("id").equals(meetingRoomId)) {
-					roomName = object.getProperty("room_name");
-					break;
-				}
-			}
-			if(roomName == null)
+			JsonObject roomObject = RoomBookingWindow.getInstance().getRoomById(meetingRoomId);
+			if(roomObject == null)
 				return false;
-			connection.getOutputStream().write(("csrfmiddlewaretoken=" + csrfmiddlewaretoken + "&room_name=" + roomName + "&capacity=" + newCapacity + "&is_active=on&_save=Save").getBytes());
+			connection.getOutputStream().write(("csrfmiddlewaretoken=" + csrfmiddlewaretoken + "&room_name=" + roomObject.getProperty("room_name") + "&capacity=" + newCapacity + "&is_active=on&_save=Save").getBytes());
 			connection.connect();
 			getResponseFromServer(connection.getInputStream());
 			return true;
