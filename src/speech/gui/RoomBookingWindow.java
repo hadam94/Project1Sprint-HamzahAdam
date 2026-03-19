@@ -5,22 +5,30 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.List;
 import java.awt.Point;
 import java.awt.TextField;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import speech.booking.RoomBookingRequests;
+import speech.util.JsonObject;
 import speech.util.PrintUtil;
 
 
 public class RoomBookingWindow extends JFrame {
 	
 	private final Dimension windowDimension = new Dimension(1000, 1000);
+	
+//	private JTable roomsTable = new JTable(new DefaultTableModel(new String[][]{{"a", "b", "c"},{"d", "e", "f"}}, new String[]{"id", "name", "capacity"}) {
+//		public boolean isCellEditable(int row, int column) {
+//			return false;
+//		};
+//	});
+	
+	private java.awt.List roomsList = new List();
 	
 	private final TextField roomnameAdd;
 	private final TextField capacityAdd;
@@ -31,9 +39,19 @@ public class RoomBookingWindow extends JFrame {
 	private final TextField capacityChange;
 
 	private static RoomBookingWindow instance;
+	
+	private RoomBookingRequests bookingSession = new RoomBookingRequests();
 		
 	public RoomBookingWindow() {
-		instance = this;
+		instance = this;		
+		PrintUtil.print("Logging in...");
+		boolean success = bookingSession.login("hadam@student.bridgew.edu", "cs490");
+		if(!success) {
+			PrintUtil.print("Login session failed! exiting");
+			System.exit(-1);
+		}
+		PrintUtil.print("Starting up gui...");
+		updateAvaliableMeetingRooms();
 		setResizable(false);
 		setSize(windowDimension);
 		setTitle("Server Test");
@@ -41,7 +59,6 @@ public class RoomBookingWindow extends JFrame {
 		
 		Dimension textBoxDimension = new Dimension(200, 20);
 		Dimension buttonDimensions = new Dimension(100, 50);
-		
 		int buttonY = 175;
 
 		roomnameAdd = ComponentCreator.addTextBoxComponent(new Point(50, buttonY - 100), textBoxDimension, null);
@@ -54,28 +71,55 @@ public class RoomBookingWindow extends JFrame {
 			} catch(Exception e) {
 				
 			}
-			if(capacity < 0) {
-				PrintUtil.print("Invalid capacity!");
+			if(capacity < 0 || roomName.isEmpty()) {
+				PrintUtil.print("Invalid capacity/room name!");
 				return;
 			}
+			bookingSession.addMeetingRoom(roomName, capacity);
+			updateAvaliableMeetingRooms();
 		});
 	
 		
 		roomIdRemove = ComponentCreator.addTextBoxComponent(new Point((int) (windowDimension.width / 2) - (textBoxDimension.width / 2), buttonY - 50), textBoxDimension, null);
-		ComponentCreator.addButtonComponent("Remove Room", new Point((int) (windowDimension.width / 2) - (buttonDimensions.width / 2), buttonY), buttonDimensions, (e) -> PrintUtil.print("Add Room"));
+		ComponentCreator.addButtonComponent("Remove Room", new Point((int) (windowDimension.width / 2) - (buttonDimensions.width / 2), buttonY), buttonDimensions, (action) -> {
+			try {
+				int id = Integer.parseInt(roomIdRemove.getText());
+				bookingSession.removeMeetingRoom(id);
+				updateAvaliableMeetingRooms();
+			} catch(Exception e) {
+				//e.printStackTrace();
+			}
+		});
 
-		
-		ComponentCreator.addButtonComponent("Change Room", new Point(windowDimension.width - (buttonDimensions.width + 100), buttonY), buttonDimensions, (e) -> PrintUtil.print("Add Room"));
-		roomIdChange = ComponentCreator.addTextBoxComponent(new Point(windowDimension.width - (int)(textBoxDimension.width + 50), buttonY - 100), textBoxDimension, (e) -> PrintUtil.print("Add Room"));
-		capacityChange = ComponentCreator.addTextBoxComponent(new Point(windowDimension.width - (int)(textBoxDimension.width + 50), buttonY - 50), textBoxDimension, (e) -> PrintUtil.print("Add Room"));
+		roomIdChange = ComponentCreator.addTextBoxComponent(new Point(windowDimension.width - (int)(textBoxDimension.width + 50), buttonY - 100), textBoxDimension, null);
+		capacityChange = ComponentCreator.addTextBoxComponent(new Point(windowDimension.width - (int)(textBoxDimension.width + 50), buttonY - 50), textBoxDimension, null);
+		ComponentCreator.addButtonComponent("Change Room", new Point(windowDimension.width - (buttonDimensions.width + 100), buttonY), buttonDimensions, (action) -> {
+			try {
+				int meetingRoomId = Integer.parseInt(roomIdChange.getText());
+				int newCapacity = Integer.parseInt(capacityChange.getText());
+				bookingSession.changeRoomCapacity(meetingRoomId, newCapacity);
+				updateAvaliableMeetingRooms();
+			} catch(Exception e) {
+				//e.printStackTrace();
+			}
+		});
 
-		add(new RenderEvent());
+
+		updateAvaliableMeetingRooms();
+		roomsList.setBounds(300, 310, 300, 300);
+		roomsList.setVisible(true);
+		add(roomsList);
+		add(new CustomPanel());
 		
 		setVisible(true);
 	}
 	
 	public static RoomBookingWindow getInstance() {
 		return instance;
+	}
+	
+	public java.awt.List getRoomsList() {
+		return roomsList;
 	}
 	
 	private void onRender(Gui gui) {
@@ -106,13 +150,20 @@ public class RoomBookingWindow extends JFrame {
 		gui.pop();
 	}
 	
-	private class RenderEvent extends JPanel {
+	private void updateAvaliableMeetingRooms() {
+		roomsList.removeAll();
+		for(JsonObject object: bookingSession.listAvalibleMeetingRooms()) {
+			roomsList.add(object.toString());
+		}
+	}
+	
+	private class CustomPanel extends JPanel {
 		
 		private final Timer timer = new Timer(16, (action) -> {
 			repaint();
 		});
 		
-		private RenderEvent() {
+		private CustomPanel() {
 			setBackground(Color.GRAY);
 			timer.start();
 		}
