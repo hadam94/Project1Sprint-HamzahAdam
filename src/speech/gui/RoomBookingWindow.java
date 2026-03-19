@@ -16,7 +16,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.memory.ChatMemory;
+import dev.langchain4j.memory.chat.TokenWindowChatMemory;
+import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.openai.OpenAiChatModelName;
+import dev.langchain4j.model.openai.OpenAiTokenCountEstimator;
 import speech.booking.RoomBookingRequests;
+import speech.util.APIKeys;
 import speech.util.JsonObject;
 import speech.util.PrintUtil;
 
@@ -62,6 +70,9 @@ public class RoomBookingWindow extends JFrame {
 		if(!window) {
 			PrintUtil.print("Starting up gui...");
 		}
+		ChatModel model = OpenAiChatModel.builder().apiKey(APIKeys.AI_KEY).modelName(OpenAiChatModelName.GPT_4_O_MINI).build();
+        ChatMemory chatMemory = TokenWindowChatMemory.withMaxTokens(Integer.MAX_VALUE, new OpenAiTokenCountEstimator(OpenAiChatModelName.GPT_4_O_MINI));
+
 		updateAvaliableMeetingRooms();
 		setResizable(false);
 		setSize(windowDimension);
@@ -71,7 +82,7 @@ public class RoomBookingWindow extends JFrame {
 		Dimension textBoxDimension = new Dimension(200, 20);
 		Dimension buttonDimensions = new Dimension(100, 50);
 		int buttonY = 175;
-
+		
 		roomnameAdd = ComponentCreator.addTextBoxComponent(new Point(50, buttonY - 100), textBoxDimension);
 		capacityAdd = ComponentCreator.addTextBoxComponent(new Point(50, buttonY - 50), textBoxDimension);
 		ComponentCreator.addButtonComponent("Add Room", new Point(100, buttonY), buttonDimensions, (action) -> {
@@ -88,8 +99,15 @@ public class RoomBookingWindow extends JFrame {
 			}
 			boolean added = bookingSession.addMeetingRoom(roomName, capacity);
 			if(added) {
+				chatMemory.clear();
+				feedRoomsIntoAI(chatMemory, false);
 				updateAvaliableMeetingRooms();
+				feedRoomsIntoAI(chatMemory, true);
+				chatMemory.add(UserMessage.from("\n What room did I just add?"));
+				
 				status = "Added new room.";
+		        
+		        PrintUtil.print(model.chat(chatMemory.messages()).aiMessage().text());
 			} else {
 				status = "Failed to add new room.";	
 			}
@@ -123,7 +141,14 @@ public class RoomBookingWindow extends JFrame {
 						writer.newLine();
 					}
 					writer.close();
+					chatMemory.clear();
+					feedRoomsIntoAI(chatMemory, false);
 					updateAvaliableMeetingRooms();
+					feedRoomsIntoAI(chatMemory, true);
+					chatMemory.add(UserMessage.from("\n What room did I just remove?"));
+			        PrintUtil.print(model.chat(chatMemory.messages()).aiMessage().text());
+
+					
 				} else {
 					status = "This meeting room id doesn't exist.";
 				}
@@ -140,13 +165,18 @@ public class RoomBookingWindow extends JFrame {
 				boolean changed = bookingSession.changeRoomCapacity(meetingRoomId, Integer.parseInt(capacityChange.getText()));
 				if(changed) {
 					int oldCapacity = getRoomById(meetingRoomId).getProperty("capacity");
+					chatMemory.clear();
+					feedRoomsIntoAI(chatMemory, false);
 					updateAvaliableMeetingRooms();
+					feedRoomsIntoAI(chatMemory, true);
+					chatMemory.add(UserMessage.from("\n What room did I just change the capacity of?"));
 					int newCapacity = getRoomById(meetingRoomId).getProperty("capacity");
 					if(oldCapacity == newCapacity) {
 						status = "Room " + meetingRoomId + " already has a capacity of " + oldCapacity + ".";
 					} else {
 						status = "Changed room capacity of room " + meetingRoomId + " from " + oldCapacity + " to " + newCapacity + ".";
 					}
+			        PrintUtil.print(model.chat(chatMemory.messages()).aiMessage().text());
 				} else {
 					status = "This meeting room id doesn't exist.";
 				}
@@ -230,6 +260,17 @@ public class RoomBookingWindow extends JFrame {
 			}
 		}
 		return null;
+	}
+	
+	private void feedRoomsIntoAI(ChatMemory chatMemory, boolean isNew) {
+		int i = 0;
+		String test = "";
+		for(String list: roomsList.getItems()) {
+			test += list + (i == 0 ? ", " : "");
+			i++;
+		}
+		String type = isNew ? "New" : "Old";
+		chatMemory.add(UserMessage.userMessage(type + "List: " + test + "\n"));
 	}
 	
 	private class CustomPanel extends JPanel {
