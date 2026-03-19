@@ -67,7 +67,7 @@ public class RoomBookingWindow extends JFrame {
 			PrintUtil.print("Login session failed! exiting");
 			System.exit(-1);
 		}
-		if(!window) {
+		if(window) {
 			PrintUtil.print("Starting up gui...");
 		}
 		ChatModel model = OpenAiChatModel.builder().apiKey(APIKeys.AI_KEY).modelName(OpenAiChatModelName.GPT_4_O_MINI).build();
