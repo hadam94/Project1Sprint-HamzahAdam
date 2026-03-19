@@ -22,6 +22,8 @@ public class RoomBookingWindow extends JFrame {
 	
 	private final Dimension windowDimension = new Dimension(1000, 1000);
 	
+	//Was planning for java table to display the rooms list more nicely, but due to time constraints I decided to cut it from final build.
+	
 //	private JTable roomsTable = new JTable(new DefaultTableModel(new String[][]{{"a", "b", "c"},{"d", "e", "f"}}, new String[]{"id", "name", "capacity"}) {
 //		public boolean isCellEditable(int row, int column) {
 //			return false;
@@ -41,10 +43,13 @@ public class RoomBookingWindow extends JFrame {
 	private static RoomBookingWindow instance;
 	
 	private RoomBookingRequests bookingSession = new RoomBookingRequests();
+	
+	private String status = "Idling...";
 		
 	public RoomBookingWindow() {
 		instance = this;		
 		PrintUtil.print("Logging in...");
+		//dont worry, cs490 isn't my actual password!
 		boolean success = bookingSession.login("hadam@student.bridgew.edu", "cs490");
 		if(!success) {
 			PrintUtil.print("Login session failed! exiting");
@@ -72,22 +77,27 @@ public class RoomBookingWindow extends JFrame {
 				
 			}
 			if(capacity < 0 || roomName.isEmpty()) {
-				PrintUtil.print("Invalid capacity/room name!");
+				status = ("Invalid capacity/room name!");
 				return;
 			}
 			bookingSession.addMeetingRoom(roomName, capacity);
 			updateAvaliableMeetingRooms();
+			status = "Added new room.";
 		});
-	
 		
 		roomIdRemove = ComponentCreator.addTextBoxComponent(new Point((int) (windowDimension.width / 2) - (textBoxDimension.width / 2), buttonY - 50), textBoxDimension, null);
 		ComponentCreator.addButtonComponent("Remove Room", new Point((int) (windowDimension.width / 2) - (buttonDimensions.width / 2), buttonY), buttonDimensions, (action) -> {
 			try {
 				int id = Integer.parseInt(roomIdRemove.getText());
-				bookingSession.removeMeetingRoom(id);
-				updateAvaliableMeetingRooms();
+				boolean removed = bookingSession.removeMeetingRoom(id);
+				if(removed) {
+					updateAvaliableMeetingRooms();
+					status = "Removed room " + id;
+				} else {
+					status = "This meeting room id doesn't exist.";
+				}
 			} catch(Exception e) {
-				//e.printStackTrace();
+				status = "Please enter a meeting room id number.";
 			}
 		});
 
@@ -97,13 +107,22 @@ public class RoomBookingWindow extends JFrame {
 			try {
 				int meetingRoomId = Integer.parseInt(roomIdChange.getText());
 				int newCapacity = Integer.parseInt(capacityChange.getText());
-				bookingSession.changeRoomCapacity(meetingRoomId, newCapacity);
-				updateAvaliableMeetingRooms();
+				boolean changed = bookingSession.changeRoomCapacity(meetingRoomId, newCapacity);
+				if(changed) {
+					updateAvaliableMeetingRooms();
+					status = "Changed room capacity of room " + meetingRoomId;
+				} else {
+					status = "This meeting room id doesn't exist.";
+				}
 			} catch(Exception e) {
-				//e.printStackTrace();
+				status = "Your meeting room id or new capacity is invalid.";
 			}
 		});
-
+		
+		ComponentCreator.addButtonComponent("Refresh", new Point(windowDimension.width - 120, windowDimension.height - 90), buttonDimensions, (action) -> {
+			updateAvaliableMeetingRooms();
+			status = "Updated rooms list.";
+		});
 
 		updateAvaliableMeetingRooms();
 		roomsList.setBounds(300, 310, 300, 300);
@@ -122,6 +141,7 @@ public class RoomBookingWindow extends JFrame {
 		return roomsList;
 	}
 	
+	//Render text components, and some lines
 	private void onRender(Gui gui) {
 		int topY = 50;
 		gui.graphics().drawLine(0, topY, (int) windowDimension.getWidth(), topY);
@@ -145,9 +165,10 @@ public class RoomBookingWindow extends JFrame {
 		
 		gui.push();
 		gui.graphics().translate(5, topY + 250);
-		//gui.graphics().scale(2, 2);
 		gui.drawString(new Font("segoe ui", 1, 24), "Current Database", 0, 0, Color.BLACK);
 		gui.pop();
+		
+		gui.drawCenteredString(new Font("arial", 1, 12), status, windowDimension.width / 2, 700, Color.BLACK);
 	}
 	
 	private void updateAvaliableMeetingRooms() {

@@ -6,7 +6,14 @@ import java.awt.Graphics2D;
 import java.util.Stack;
 
 /**
- * OpenGL Inspired class.
+ * OpenGL Inspired class. Uses 3x3 matrix for 2d rendering. 4x4 typically in 3d rendering, but not needed
+ * This is mainly so you can save the translation, rotation, and scaling states of graphics elements, and 
+ * you can revert it to the previous state (matrix) by calling pop()
+ * 
+ * push()
+ * transformation/scaling/rotation code (alters the matrix)
+ * render code here (influenced by altered matrix operations)
+ * pop() reverts matrix back to previous state
  */
 public class Gui {
 	

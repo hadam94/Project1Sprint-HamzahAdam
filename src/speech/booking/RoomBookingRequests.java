@@ -25,7 +25,13 @@ public class RoomBookingRequests {
 	private static final String AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36";
 	
 	private JsonObject loginToken;
+	/**
+	 * Basically login sessions from admin server. you need to log into the server at least once through http://45.55.230.108:8000/admin/, 
+	 * and use hadam@student.bridgew.edu as the email and cs490 as the password. then grab these sessions from inspect element, the sessions 
+	 * will be good for a couple of hours. Due to time constraints, a proper sql system was not able to be done.
+	 */
 	private String cookieSession = "csrftoken=vwJW4RXU1r9ylB5QzzxHWgbbmrz9lTfE; sessionid=k4no5yq8x9cckxmk2rb645tlgpufv3u2";
+	private String csrfmiddlewaretoken = "DnUd08cEM1RAKbzUII1naWowSMEDPN8hYJtZUPZoDiQYVCuA77oUW2px433C0wdL";
 	
 	public boolean login(String email, String password) {
 		try {
@@ -51,6 +57,7 @@ public class RoomBookingRequests {
 		}
 	}
 	
+	//A way to automate the cookieSession and csrfmiddlewaretoken. Was planning on that but couldn't do that.
 	public void adminLogin(String email, String password) {
 		
 	}
@@ -159,7 +166,7 @@ public class RoomBookingRequests {
 			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			connection.setRequestProperty("User-Agent", AGENT);
 			connection.setDoOutput(true);
-			connection.getOutputStream().write(("csrfmiddlewaretoken=DnUd08cEM1RAKbzUII1naWowSMEDPN8hYJtZUPZoDiQYVCuA77oUW2px433C0wdL&room_name=" + name + "&capacity=" + capacity + "&is_active=on&_save=Save").getBytes());
+			connection.getOutputStream().write(("csrfmiddlewaretoken=" + csrfmiddlewaretoken + "&room_name=" + name + "&capacity=" + capacity + "&is_active=on&_save=Save").getBytes());
 			connection.connect();
 			getResponseFromServer(connection.getInputStream());
 			return true;
@@ -181,7 +188,7 @@ public class RoomBookingRequests {
 			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			connection.setRequestProperty("User-Agent", AGENT);
 			connection.setDoOutput(true);
-			connection.getOutputStream().write(("csrfmiddlewaretoken=1WxZNA5BCBmoVPz1vPrS6qONzcMa9Oetmi6LHhSltSlM6guHUeOpSwPOLtb9kxjX&post=yes").getBytes());
+			connection.getOutputStream().write(("csrfmiddlewaretoken=" + csrfmiddlewaretoken + "&post=yes").getBytes());
 			connection.connect();
 			getResponseFromServer(connection.getInputStream());
 			return true;
@@ -214,7 +221,7 @@ public class RoomBookingRequests {
 			}
 			if(roomName == null)
 				return false;
-			connection.getOutputStream().write(("csrfmiddlewaretoken=DnUd08cEM1RAKbzUII1naWowSMEDPN8hYJtZUPZoDiQYVCuA77oUW2px433C0wdL&room_name=" + roomName + "&capacity=" + newCapacity + "&is_active=on&_save=Save").getBytes());
+			connection.getOutputStream().write(("csrfmiddlewaretoken=" + csrfmiddlewaretoken + "&room_name=" + roomName + "&capacity=" + newCapacity + "&is_active=on&_save=Save").getBytes());
 			connection.connect();
 			getResponseFromServer(connection.getInputStream());
 			return true;
