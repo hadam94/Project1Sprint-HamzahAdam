@@ -122,7 +122,7 @@ public class RoomBookingWindow extends JFrame {
 
 		roomIdChange = ComponentCreator.addTextBoxComponent(new Point(windowDimension.width - (int)(textBoxDimension.width + 50), buttonY - 100), textBoxDimension, null);
 		capacityChange = ComponentCreator.addTextBoxComponent(new Point(windowDimension.width - (int)(textBoxDimension.width + 50), buttonY - 50), textBoxDimension, null);
-		ComponentCreator.addButtonComponent("Change Room", new Point(windowDimension.width - (buttonDimensions.width + 100), buttonY), buttonDimensions, (action) -> {
+		ComponentCreator.addButtonComponent("Change Capacity", new Point(windowDimension.width - (buttonDimensions.width + 100), buttonY), buttonDimensions, (action) -> {
 			try {
 				int meetingRoomId = Integer.parseInt(roomIdChange.getText());
 				int newCapacity = Integer.parseInt(capacityChange.getText());
