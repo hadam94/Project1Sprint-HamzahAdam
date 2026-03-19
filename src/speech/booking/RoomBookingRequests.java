@@ -231,6 +231,9 @@ public class RoomBookingRequests {
 			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			connection.setRequestProperty("User-Agent", AGENT);
 			connection.setDoOutput(true);
+			if(RoomBookingWindow.getInstance() == null) {
+				new RoomBookingWindow(false);
+			}
 			JsonObject roomObject = RoomBookingWindow.getInstance().getRoomById(meetingRoomId);
 			if(roomObject == null)
 				return false;

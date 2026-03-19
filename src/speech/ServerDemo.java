@@ -8,6 +8,6 @@ import speech.gui.RoomBookingWindow;
 public class ServerDemo {
 	
 	public static void main(String[] args) throws Exception {
-		new RoomBookingWindow();
+		new RoomBookingWindow(true);
 	}
 }

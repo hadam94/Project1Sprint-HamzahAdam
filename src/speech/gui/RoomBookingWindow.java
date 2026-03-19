@@ -49,7 +49,8 @@ public class RoomBookingWindow extends JFrame {
 	
 	private String status = "Idling...";
 		
-	public RoomBookingWindow() {
+	//passing in false is meant for tests... so window doesn't pop up.
+	public RoomBookingWindow(boolean window) {
 		instance = this;		
 		PrintUtil.print("Logging in...");
 		//dont worry, cs490 isn't my actual password!
@@ -164,8 +165,9 @@ public class RoomBookingWindow extends JFrame {
 		add(roomsList);
 		add(new CustomPanel());
 		
-		setVisible(true);
+		setVisible(window);
 	}
+
 	
 	public static RoomBookingWindow getInstance() {
 		return instance;
