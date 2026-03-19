@@ -6,6 +6,7 @@ If the IDE does not automatically run the build script, you can run it manually 
 **How to run the program?**
 
 Simply run the ServerDemo.java file through the IDE or command line. To run the tests, run the SQLServerTest.java file which is located inside tests/SQLServerTest.java, through the IDE aswell with JUnit
+The tests will test adding a room, removing a room, and changing a rooms capacity from the server. 3 tests in total. More details can be found inside SQLServerTest.java
 
 **How to use the program?**
 
