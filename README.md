@@ -5,19 +5,29 @@ If the IDE does not automatically run the build script, you can run it manually 
 
 **How to run the program?**
 
-Simply run the SpeechDemo.java file or the BookingDemo.java file through the IDE or command line. Tests through IDE aswell
+Simply run the ServerDemo.java file through the IDE or command line. To run the tests, run the SQLServerTest.java file which is located inside tests/SQLServerTest.java, through the IDE aswell with JUnit
 
 **How to use the program?**
 
-When you run the program, you will be prompted the following options:
-**ENTER**: Start speaking into the microphone
-**RELOAD**: Reloads current booking information stored from the server.
-**EXIT**: Exits the program
+Before running the program, you want to do the following steps:
 
-When you press **enter** on your keyboard, the microphone will be set up, and you will have 10 seconds to say a prompt. After 10 seconds is passed, an AI generated response will be shown in the console, based off of what you asked, the current time and the booked rooms that are currently in the server. After this, you will be prompted the 3 options shown above.
+Go onto http://45.55.230.108:8000/admin/ 
+Open inspect element, and go into the Network Tab
+Enter ``hadam@student.bridgew.edu`` as the email and ``cs490`` as the password
+When you log in, Click on the http://45.55.230.108:8000/admin/login/?next=/admin/ packet that has the POST request
+Click on Payload, and copy the value and paste it into the RoomBookingRequests.java file. make sure to override the csrfmiddlewaretoken field variable with the one you copied.
 
-When you enter **exit** (not case sensitive) in the terminal, the program will close and the process will be terminated. simple as that.
+The sessions will be good for a couple of hours. If you get errors when attempting to do operations in the GUI, simply repeat the steps above.
 
-When you enter **reload** (not case sensitive) in the terminal, the program will reload all current booking information stored in the booking server. This can be useful as somebody else could potentially book a new appointment while an AI generated response is happeneing at the same time, so it's important to use this command from time to time.
+Now, go to the next packet (http://45.55.230.108:8000/admin/ with GET request), and look for the Cookie request header. copy it's value, and paste it into the cookieSession field that is located inside RoomBookingRequests.java.
 
-As for secrets, due to time constraints, I was not able to hide the API Key in time, which is not good for security. However, I will assume that everyone won't take advantage of the API Key being exposed, and using the key to do things like spamming API Requests or to drain the amount of credits that I currently have.
+Once that is done, you can run the GUI by running the ServerDemo.java file
+There will be an Add Room, Remove Room, Change Capacity, and Refresh Button.
+
+Add Room: will add a room with a name and capacity to the server. 
+Remove Room: will remove a room based off of a Room ID. Will also save a report in assets/reports/report.txt telling you what bookings were deleted alongside the room that you deleted.
+Change Capacity: will change a rooms maximum booking capacity based off of the room id you input
+Refresh: Refreshes the current room list from the server
+
+There is error handling built into the GUI. if you input invalid characters into the text box or if something on the server doesn't exist, the status message, displayed in the middle of the screen will let you know.
+The rooms list is a scrollable box located in the center of the GUI. It shows all rooms present in the server in a JSON format. 
