@@ -59,7 +59,9 @@ public class RoomBookingWindow extends JFrame {
 			PrintUtil.print("Login session failed! exiting");
 			System.exit(-1);
 		}
-		PrintUtil.print("Starting up gui...");
+		if(!window) {
+			PrintUtil.print("Starting up gui...");
+		}
 		updateAvaliableMeetingRooms();
 		setResizable(false);
 		setSize(windowDimension);

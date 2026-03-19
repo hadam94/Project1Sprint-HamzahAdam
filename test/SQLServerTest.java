@@ -52,4 +52,12 @@ public class SQLServerTest {
 		boolean changed = bookingSession.changeRoomCapacity(2, 744);
 		assertEquals(true, changed);
 	}
+	
+	/**
+	 * Logs into the server to check if it's running. If successful, test passes.
+	 */
+	@Test
+	public void serverRunning() {
+		assertEquals(true, new RoomBookingRequests().login("hadam@student.bridgew.edu", "cs490"));
+	}
 }
