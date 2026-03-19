@@ -1,9 +1,8 @@
 package speech;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
+import static speech.util.PrintUtil.print;
 
+import speech.booking.RoomBookingRequests;
 import speech.gui.RoomBookingWindow;
 
 public class ServerDemo {

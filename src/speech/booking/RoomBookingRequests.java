@@ -123,12 +123,15 @@ public class RoomBookingRequests {
 			response = response.substring(1, response.length() - 1);
 			List<JsonObject> jsonObjects = new ArrayList<JsonObject>();
 			String objectText = "";
-			for(char character: response.toCharArray()) {
+			int i = 0;
+			char[] array = response.toCharArray();
+			for(char character: array) {
 				objectText += character;
-				if(objectText.endsWith("},{")) {
+				if(objectText.endsWith("},{") || i == array.length - 1) {
 					jsonObjects.add(JsonObject.of(objectText.substring(0, objectText.length() - 2)));
 					objectText = "" + character;
 				}
+				i++;
 			}
 			return jsonObjects;
 		} catch(IOException e) {

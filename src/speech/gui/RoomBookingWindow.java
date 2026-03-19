@@ -8,6 +8,9 @@ import java.awt.Graphics2D;
 import java.awt.List;
 import java.awt.Point;
 import java.awt.TextField;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -93,6 +96,22 @@ public class RoomBookingWindow extends JFrame {
 				if(removed) {
 					updateAvaliableMeetingRooms();
 					status = "Removed room " + id;
+					java.util.List<JsonObject> currentBookings = bookingSession.listMyBookings();
+					java.util.List<JsonObject> cancelledBookings = new ArrayList<>();
+					BufferedWriter writer = new BufferedWriter(new FileWriter("assets/report/report.txt"));
+					for(JsonObject object: currentBookings) {
+						if(object.getProperty("id").equals(id)) {
+							cancelledBookings.add(object);
+							bookingSession.cancelMeetingRoom(id);
+						}
+					}
+					writer.write("Reservations cancelled: " + cancelledBookings.size());
+					writer.newLine();
+					for(JsonObject cancelledBooking: cancelledBookings) {
+						writer.write(cancelledBooking.toString());
+						writer.newLine();
+					}
+					writer.close();
 				} else {
 					status = "This meeting room id doesn't exist.";
 				}

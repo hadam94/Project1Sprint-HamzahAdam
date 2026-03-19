@@ -11,7 +11,7 @@ import speech.booking.RoomBookingRequests;
 import speech.util.JsonObject;
 
 
-//Sprint 2
+//Sprint 2/4
 //Hamzah Adam
 public class RoomBookingTest {
 	
@@ -21,7 +21,7 @@ public class RoomBookingTest {
 	@Test
 	public void loginWithCredentials() {
 		RoomBookingRequests booking = new RoomBookingRequests();
-		booking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		booking.login("hadam@student.bridgew.edu", "cs490");
 		JsonObject token = booking.getLoginToken();
 		boolean hasAccessToken = false;
 		if(token.hasProperty("token") && ((JsonObject) token.getProperty("token")).hasProperty("access")) {
@@ -38,7 +38,7 @@ public class RoomBookingTest {
 	@Test
 	public void retrieveRooms() {
 		RoomBookingRequests booking = new RoomBookingRequests();
-		booking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		booking.login("hadam@student.bridgew.edu", "cs490");
 		List<JsonObject> rooms = booking.listAvalibleMeetingRooms();
 		boolean hasDmf = false;
 		for(JsonObject room: rooms) {
@@ -57,7 +57,7 @@ public class RoomBookingTest {
 	@Test
 	public void makeReservation() {
 		RoomBookingRequests booking = new RoomBookingRequests();
-		booking.login("Comp490.002@bridgew.edu", "TuesThurs12:30");
+		booking.login("hadam@student.bridgew.edu", "cs490");
 		//Booking room for 15 minutes
 		JsonObject firstResponse = booking.bookMeetingRoom(1, "2026-02-09 6:00 AM", "2026-02-09 6:15 AM", 1);
 		print(firstResponse);
